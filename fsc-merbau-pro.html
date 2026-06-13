@@ -1,0 +1,2007 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIMERBAU – Sistem Manajemen Kayu Merbau FSC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --g900:#0f1f10; --g800:#1a3318; --g700:#245522; --g600:#2d6b2b;
+  --g500:#3a8038; --g400:#52a050; --g300:#7dc07b; --g200:#b0ddb0; --g100:#d8f0d8;
+  --b900:#5c3206; --b800:#7a4510; --b700:#9e5c1a; --b600:#c47828; --b500:#d99030;
+  --b400:#e8a840; --b300:#f0c060; --b200:#f8d890; --b100:#fdefd0;
+  --n900:#1a1a18; --n800:#2e2e2c; --n700:#444440; --n600:#5c5c58;
+  --n500:#787870; --n400:#989890; --n300:#bcbcb4; --n200:#dcdcd4; --n100:#f4f4ec;
+  --white:#ffffff; --page:#f7f4ee;
+  --radius:8px; --radius-lg:14px; --radius-xl:20px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.08);
+  --shadow-md:0 4px 16px rgba(0,0,0,.10);
+  --shadow-lg:0 10px 40px rgba(0,0,0,.14);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--page);color:var(--n900);min-height:100vh;font-size:15px;}
+
+/* ── TOPBAR ── */
+#topbar{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  background:var(--g900);
+  border-bottom:2px solid var(--b500);
+  height:58px;display:flex;align-items:center;
+}
+.topbar-inner{
+  width:100%;max-width:1400px;margin:0 auto;
+  padding:0 1.5rem;
+  display:flex;align-items:center;gap:1rem;
+}
+.logo{
+  display:flex;align-items:center;gap:10px;
+  text-decoration:none;flex-shrink:0;
+}
+.logo-box{
+  width:36px;height:36px;background:var(--b500);
+  border-radius:6px;display:flex;align-items:center;
+  justify-content:center;font-weight:700;font-size:11px;
+  color:var(--g900);letter-spacing:.5px;line-height:1.1;
+  text-align:center;
+}
+.logo-text{color:var(--white);}
+.logo-text span{font-family:'Merriweather',serif;font-size:16px;font-weight:700;display:block;line-height:1.1;}
+.logo-text small{font-size:10px;color:rgba(255,255,255,.5);font-style:italic;}
+.topbar-spacer{flex:1;}
+#hamburger{
+  display:none;background:none;border:none;cursor:pointer;
+  color:var(--white);font-size:22px;padding:4px;
+}
+/* ── SIDEBAR ── */
+#sidebar{
+  position:fixed;top:58px;left:0;bottom:0;
+  width:230px;background:var(--g800);
+  overflow-y:auto;z-index:150;
+  transition:transform .25s ease;
+}
+#sidebar::-webkit-scrollbar{width:4px;}
+#sidebar::-webkit-scrollbar-thumb{background:var(--g600);border-radius:2px;}
+.side-group{padding:12px 0 4px;}
+.side-group-label{
+  font-size:10px;font-weight:700;letter-spacing:1.2px;
+  text-transform:uppercase;color:rgba(255,255,255,.35);
+  padding:0 16px 6px;
+}
+.side-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 16px;cursor:pointer;
+  color:rgba(255,255,255,.7);font-size:13px;font-weight:500;
+  border-left:3px solid transparent;
+  transition:all .15s;
+  text-decoration:none;
+  border:none;background:none;width:100%;text-align:left;
+  font-family:'Inter',sans-serif;
+}
+.side-item:hover{background:rgba(255,255,255,.07);color:var(--white);}
+.side-item.active{
+  background:rgba(200,160,50,.15);
+  border-left:3px solid var(--b400);
+  color:var(--b300);
+}
+.side-icon{font-size:15px;width:18px;text-align:center;flex-shrink:0;}
+/* ── MAIN ── */
+#main{
+  margin-left:230px;margin-top:58px;
+  padding:2rem 2rem 4rem;
+  min-height:calc(100vh - 58px);
+}
+.section{display:none;}
+.section.active{display:block;}
+/* ── PAGE HEADER ── */
+.ph{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  margin-bottom:1.75rem;padding-bottom:1rem;
+  border-bottom:2px solid var(--n200);
+}
+.ph-left h2{
+  font-family:'Merriweather',serif;font-size:22px;
+  color:var(--g800);line-height:1.2;
+}
+.ph-left p{font-size:13px;color:var(--n500);margin-top:4px;}
+/* ── STAT GRID ── */
+.stat-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:1rem;margin-bottom:1.75rem;
+}
+.stat-card{
+  background:var(--white);border:1px solid var(--n200);
+  border-radius:var(--radius-lg);padding:1.1rem 1.3rem;
+  position:relative;overflow:hidden;
+}
+.stat-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+}
+.sc-g::before{background:var(--g400);}
+.sc-b::before{background:var(--b500);}
+.sc-r::before{background:#e05555;}
+.sc-p::before{background:#6b5ce7;}
+.sc-teal::before{background:#2a9d8f;}
+.stat-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--n500);margin-bottom:6px;}
+.stat-val{font-size:26px;font-weight:700;color:var(--g800);line-height:1;}
+.stat-sub{font-size:11px;color:var(--n400);margin-top:3px;}
+/* ── CARD ── */
+.card{
+  background:var(--white);border:1px solid var(--n200);
+  border-radius:var(--radius-lg);overflow:hidden;
+  margin-bottom:1.5rem;
+  box-shadow:var(--shadow-sm);
+}
+.card-head{
+  padding:.9rem 1.4rem;background:var(--n100);
+  border-bottom:1px solid var(--n200);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.card-head h3{font-size:14px;font-weight:700;color:var(--g800);display:flex;align-items:center;gap:8px;}
+.card-body{padding:1.4rem;}
+/* ── GRID LAYOUTS ── */
+.two-col{display:grid;grid-template-columns:3fr 2fr;gap:1.5rem;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem;}
+.two-col-equal{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+/* ── FORM ── */
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:.75rem;}
+.fg label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--n500);}
+.fg input,.fg select,.fg textarea{
+  padding:8px 11px;border:1px solid var(--n300);border-radius:var(--radius);
+  font-size:13px;font-family:'Inter',sans-serif;color:var(--n900);
+  background:var(--white);transition:border-color .2s;
+}
+.fg input:focus,.fg select:focus,.fg textarea:focus{
+  outline:none;border-color:var(--g500);
+  box-shadow:0 0 0 3px rgba(58,128,56,.12);
+}
+.fg textarea{resize:vertical;min-height:70px;}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.fgrid.three{grid-template-columns:1fr 1fr 1fr;}
+.fgrid.full{grid-column:1/-1;}
+/* ── BUTTONS ── */
+.btn{
+  padding:8px 18px;border:none;border-radius:var(--radius);
+  font-size:13px;font-weight:600;cursor:pointer;
+  font-family:'Inter',sans-serif;
+  display:inline-flex;align-items:center;gap:6px;
+  transition:all .15s;
+}
+.btn-primary{background:var(--g600);color:var(--white);}
+.btn-primary:hover{background:var(--g700);}
+.btn-gold{background:var(--b500);color:var(--g900);}
+.btn-gold:hover{background:var(--b400);}
+.btn-outline{background:transparent;border:1px solid var(--n300);color:var(--n600);}
+.btn-outline:hover{border-color:var(--g500);color:var(--g600);}
+.btn-danger{background:#dc3545;color:#fff;}
+.btn-danger:hover{background:#b02a37;}
+.btn-sm{padding:5px 12px;font-size:12px;}
+.btn-xs{padding:3px 9px;font-size:11px;}
+/* ── TABLE ── */
+.tw{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead th{
+  text-align:left;padding:9px 13px;background:var(--n100);
+  color:var(--n500);font-size:10px;text-transform:uppercase;
+  letter-spacing:.7px;font-weight:700;border-bottom:1px solid var(--n200);
+  white-space:nowrap;
+}
+tbody td{
+  padding:9px 13px;border-bottom:1px solid var(--n100);
+  color:var(--n900);vertical-align:middle;
+}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:#fafaf6;}
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;}
+.bg-green{background:#d4edda;color:#155724;}
+.bg-gold{background:#fff3cd;color:#856404;}
+.bg-red{background:#f8d7da;color:#842029;}
+.bg-blue{background:#cfe2ff;color:#0a367a;}
+.bg-gray{background:var(--n100);color:var(--n600);}
+.bg-teal{background:#d1f2eb;color:#0d6b56;}
+.bg-purple{background:#ede4fe;color:#4b21a8;}
+/* ── PROGRESS ── */
+.pbar{height:7px;background:var(--n200);border-radius:4px;overflow:hidden;margin-top:5px;}
+.pfill{height:100%;border-radius:4px;background:var(--g400);transition:width .4s;}
+.pfill.gold{background:var(--b500);}
+.pfill.red{background:#e05555;}
+/* ── MODAL ── */
+.moverlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.55);z-index:400;
+  align-items:center;justify-content:center;padding:1rem;
+}
+.moverlay.open{display:flex;}
+.modal{
+  background:var(--white);border-radius:var(--radius-xl);
+  width:600px;max-width:100%;max-height:90vh;overflow-y:auto;
+  box-shadow:var(--shadow-lg);
+}
+.modal-hd{
+  padding:1.1rem 1.4rem;background:var(--n100);
+  border-bottom:1px solid var(--n200);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.modal-hd h3{font-size:15px;font-weight:700;}
+.mbody{padding:1.4rem;}
+.mfoot{
+  padding:1rem 1.4rem;border-top:1px solid var(--n200);
+  display:flex;gap:8px;justify-content:flex-end;
+}
+.btn-x{background:none;border:none;cursor:pointer;font-size:22px;color:var(--n500);line-height:1;}
+/* ── TOAST ── */
+#toast{
+  position:fixed;bottom:2rem;right:2rem;z-index:999;
+  background:var(--g700);color:var(--white);
+  padding:12px 20px;border-radius:var(--radius);
+  font-size:13px;font-weight:600;
+  box-shadow:var(--shadow-md);
+  transform:translateY(20px);opacity:0;
+  transition:all .3s;pointer-events:none;
+}
+#toast.show{transform:translateY(0);opacity:1;}
+/* ── HERO (Ensiklopedia) ── */
+.hero-merbau{
+  position:relative;height:320px;border-radius:var(--radius-xl);
+  overflow:hidden;margin-bottom:1.5rem;
+}
+.hero-merbau img{width:100%;height:100%;object-fit:cover;display:block;}
+.hero-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to right, rgba(10,25,10,.85) 0%, rgba(10,25,10,.3) 100%);
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:2rem;
+}
+.hero-overlay h1{
+  font-family:'Merriweather',serif;font-size:28px;
+  color:var(--white);line-height:1.25;margin-bottom:.5rem;
+}
+.hero-overlay p{color:rgba(255,255,255,.8);font-size:14px;max-width:520px;line-height:1.6;}
+/* ── PHOTO GRID ── */
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;}
+.photo-item{border-radius:var(--radius-lg);overflow:hidden;position:relative;}
+.photo-item img{width:100%;height:180px;object-fit:cover;display:block;transition:transform .3s;}
+.photo-item:hover img{transform:scale(1.04);}
+.photo-cap{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(transparent,rgba(0,0,0,.7));
+  color:var(--white);font-size:12px;padding:20px 10px 8px;
+  font-weight:500;
+}
+/* ── INFO BOX ── */
+.infobox{
+  border-left:4px solid var(--g400);
+  background:rgba(58,128,56,.06);
+  border-radius:0 var(--radius) var(--radius) 0;
+  padding:1rem 1.2rem;margin-bottom:1rem;
+}
+.infobox.gold{border-color:var(--b500);background:rgba(217,144,48,.06);}
+.infobox.red{border-color:#e05555;background:rgba(224,85,85,.06);}
+.infobox.blue{border-color:#3a7bd5;background:rgba(58,123,213,.06);}
+.infobox h4{font-size:13px;font-weight:700;margin-bottom:4px;color:var(--g700);}
+.infobox.gold h4{color:var(--b700);}
+.infobox.red h4{color:#9b2020;}
+.infobox.blue h4{color:#1a4f99;}
+.infobox p,.infobox li{font-size:13px;line-height:1.65;color:var(--n700);}
+.infobox ul{padding-left:1.2rem;margin-top:4px;}
+/* ── TIMELINE ── */
+.tl{position:relative;padding-left:1.8rem;}
+.tl::before{content:'';position:absolute;left:7px;top:0;bottom:0;width:2px;background:var(--n200);}
+.tl-item{position:relative;padding-bottom:1.3rem;}
+.tl-dot{
+  position:absolute;left:-1.8rem;top:3px;
+  width:16px;height:16px;border-radius:50%;
+  border:2px solid var(--g400);background:var(--white);
+  display:flex;align-items:center;justify-content:center;
+  font-size:7px;color:var(--g400);
+}
+.tl-dot.done{background:var(--g400);color:var(--white);}
+.tl-date{font-size:10px;color:var(--n400);font-weight:700;}
+.tl-title{font-size:13px;font-weight:600;margin:1px 0;}
+.tl-desc{font-size:12px;color:var(--n500);}
+/* ── CHECKLIST ── */
+.ck-item{
+  display:flex;align-items:flex-start;gap:11px;
+  padding:10px 0;border-bottom:1px solid var(--n100);
+}
+.ck-item:last-child{border-bottom:none;}
+.ck-box{
+  width:21px;height:21px;border:2px solid var(--n300);
+  border-radius:5px;display:flex;align-items:center;
+  justify-content:center;cursor:pointer;flex-shrink:0;
+  margin-top:1px;transition:all .2s;font-size:12px;
+}
+.ck-box.on{background:var(--g400);border-color:var(--g400);color:var(--white);}
+.ck-title{font-size:13px;font-weight:600;}
+.ck-desc{font-size:11px;color:var(--n500);margin-top:2px;}
+.ck-tag{
+  font-size:10px;font-weight:700;letter-spacing:.4px;
+  padding:2px 7px;border-radius:10px;
+  background:var(--n100);color:var(--n500);
+  flex-shrink:0;margin-left:auto;margin-top:2px;
+}
+/* ── FSC PRINCIPLE TABS ── */
+.ptab-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem;}
+.ptab{
+  padding:5px 13px;border-radius:20px;font-size:12px;font-weight:600;
+  border:1px solid var(--n300);background:var(--white);
+  cursor:pointer;color:var(--n600);transition:all .15s;
+}
+.ptab.active{background:var(--g600);border-color:var(--g600);color:var(--white);}
+/* ── REPORT HERO ── */
+.rpt-hero{
+  background:var(--g800);color:var(--white);
+  padding:2rem;border-radius:var(--radius-xl);
+  margin-bottom:1.5rem;
+  display:flex;align-items:center;gap:2rem;
+}
+.rpt-logo{
+  width:80px;height:80px;background:var(--b500);
+  border-radius:var(--radius-lg);display:flex;
+  align-items:center;justify-content:center;
+  font-family:'Merriweather',serif;font-size:22px;
+  font-weight:700;color:var(--g900);flex-shrink:0;
+}
+.rpt-meta{font-size:12px;color:rgba(255,255,255,.5);margin-top:8px;display:flex;gap:1.5rem;flex-wrap:wrap;}
+/* ── SPESIES INFO TABLE ── */
+.spt{width:100%;border-collapse:collapse;font-size:13px;}
+.spt td{padding:8px 10px;border-bottom:1px solid var(--n100);}
+.spt td:first-child{color:var(--n500);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.5px;width:40%;}
+/* ── TAHAP SERTIFIKASI ── */
+.cert-step{
+  display:flex;gap:16px;padding:14px 0;
+  border-bottom:1px solid var(--n100);
+}
+.cert-step:last-child{border-bottom:none;}
+.cert-num{
+  width:34px;height:34px;border-radius:50%;
+  background:var(--g100);border:2px solid var(--g300);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:700;color:var(--g700);flex-shrink:0;
+  margin-top:2px;
+}
+.cert-num.done{background:var(--g400);border-color:var(--g400);color:var(--white);}
+.cert-title{font-size:14px;font-weight:600;margin-bottom:3px;}
+.cert-desc{font-size:12px;color:var(--n500);line-height:1.5;}
+/* ── WOOD PROPERTIES ── */
+.prop-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid var(--n100);
+  font-size:13px;
+}
+.prop-row:last-child{border-bottom:none;}
+.prop-label{color:var(--n600);}
+.prop-val{font-weight:700;color:var(--g800);}
+/* ── CALC ── */
+.calc-box{
+  background:var(--g800);border-radius:var(--radius-lg);
+  padding:1.4rem;color:var(--white);
+}
+.calc-result{
+  font-size:36px;font-weight:700;color:var(--b300);
+  margin:8px 0 4px;
+}
+.calc-label{font-size:12px;color:rgba(255,255,255,.6);}
+/* ── MISC ── */
+.row{display:flex;gap:1rem;flex-wrap:wrap;}
+.empty-st{text-align:center;padding:2.5rem 1rem;color:var(--n400);}
+.empty-st .ei{font-size:40px;margin-bottom:.75rem;}
+.empty-st p{font-size:13px;}
+.divider{border:none;border-top:1px solid var(--n200);margin:1.25rem 0;}
+.prose p{font-size:14px;line-height:1.75;color:var(--n700);margin-bottom:.9rem;}
+.prose h4{font-size:15px;font-weight:700;color:var(--g800);margin:1.25rem 0 .5rem;}
+.prose ul{padding-left:1.4rem;margin-bottom:.9rem;}
+.prose li{font-size:13px;line-height:1.7;color:var(--n700);}
+
+@media(max-width:900px){
+  #sidebar{transform:translateX(-100%);}
+  #sidebar.open{transform:translateX(0);}
+  #main{margin-left:0;}
+  #hamburger{display:block;}
+  .two-col,.three-col,.two-col-equal{grid-template-columns:1fr;}
+  .photo-grid{grid-template-columns:1fr 1fr;}
+  .fgrid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div id="topbar">
+  <div class="topbar-inner">
+    <button id="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+    <a href="#" class="logo">
+      <div class="logo-box">SI<br>MER</div>
+      <div class="logo-text">
+        <span>SIMERBAU</span>
+        <small>Sistem Informasi Manajemen Kayu Merbau</small>
+      </div>
+    </a>
+    <div class="topbar-spacer"></div>
+    <span id="topbar-date" style="font-size:12px;color:rgba(255,255,255,.45);"></span>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="side-group">
+    <div class="side-group-label">Utama</div>
+    <button class="side-item active" onclick="go('dashboard')"><span class="side-icon">📊</span>Dasbor</button>
+    <button class="side-item" onclick="go('ensiklopedia')"><span class="side-icon">📖</span>Ensiklopedia Merbau</button>
+    <button class="side-item" onclick="go('galeri')"><span class="side-icon">🖼️</span>Galeri & Identifikasi</button>
+  </div>
+  <div class="side-group">
+    <div class="side-group-label">Manajemen Lapangan</div>
+    <button class="side-item" onclick="go('inventaris')"><span class="side-icon">🌳</span>Inventaris Pohon</button>
+    <button class="side-item" onclick="go('panen')"><span class="side-icon">🪵</span>Panen & Produksi</button>
+    <button class="side-item" onclick="go('penanaman')"><span class="side-icon">🌱</span>Penanaman & Rehabilitasi</button>
+    <button class="side-item" onclick="go('patroli')"><span class="side-icon">🛡️</span>Patroli & Pengawasan</button>
+  </div>
+  <div class="side-group">
+    <div class="side-group-label">Sertifikasi FSC</div>
+    <button class="side-item" onclick="go('fsc-info')"><span class="side-icon">🏅</span>Tentang FSC</button>
+    <button class="side-item" onclick="go('fsc-checklist')"><span class="side-icon">✅</span>Daftar Periksa FSC</button>
+    <button class="side-item" onclick="go('rantai')"><span class="side-icon">🔗</span>Rantai Pasok (CoC)</button>
+    <button class="side-item" onclick="go('dokumen')"><span class="side-icon">📁</span>Dokumen & Izin</button>
+  </div>
+  <div class="side-group">
+    <div class="side-group-label">Analisis</div>
+    <button class="side-item" onclick="go('kalkulator')"><span class="side-icon">🧮</span>Kalkulator Volume</button>
+    <button class="side-item" onclick="go('peta')"><span class="side-icon">🗺️</span>Peta Blok Kelola</button>
+    <button class="side-item" onclick="go('laporan')"><span class="side-icon">📄</span>Laporan & Ekspor</button>
+  </div>
+  <div class="side-group">
+    <div class="side-group-label">Referensi</div>
+    <button class="side-item" onclick="go('regulasi')"><span class="side-icon">⚖️</span>Regulasi & Standar</button>
+    <button class="side-item" onclick="go('kontak')"><span class="side-icon">📞</span>Kontak & Lembaga</button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main id="main">
+
+<!-- ═══════════════════ DASBOR ═══════════════════ -->
+<section id="dashboard" class="section active">
+  <div class="ph">
+    <div class="ph-left">
+      <h2>Dasbor Operasional</h2>
+      <p>Ringkasan pengelolaan hutan merbau & kemajuan sertifikasi FSC</p>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-gold" onclick="go('fsc-checklist')">Cek Status FSC →</button>
+    </div>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card sc-g">
+      <div class="stat-label">Total Pohon</div>
+      <div class="stat-val" id="ds-pohon">0</div>
+      <div class="stat-sub">dalam inventaris</div>
+    </div>
+    <div class="stat-card sc-b">
+      <div class="stat-label">Volume Produksi</div>
+      <div class="stat-val" id="ds-vol">0 m³</div>
+      <div class="stat-sub">periode berjalan</div>
+    </div>
+    <div class="stat-card sc-teal">
+      <div class="stat-label">Pohon Ditanam</div>
+      <div class="stat-val" id="ds-tanam">0</div>
+      <div class="stat-sub">rehabilitasi</div>
+    </div>
+    <div class="stat-card sc-p">
+      <div class="stat-label">Patroli Tercatat</div>
+      <div class="stat-val" id="ds-patroli">0</div>
+      <div class="stat-sub">kegiatan pengawasan</div>
+    </div>
+    <div class="stat-card sc-r">
+      <div class="stat-label">Kemajuan FSC</div>
+      <div class="stat-val" id="ds-fsc">0%</div>
+      <div class="stat-sub" id="ds-fsc-sub">0/20 kriteria</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="card">
+        <div class="card-head"><h3>🌿 Status Sertifikasi FSC per Prinsip</h3></div>
+        <div class="card-body" id="ds-fsc-bars"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>⚠️ Peringatan Aktif</h3></div>
+        <div class="card-body" id="ds-alerts">
+          <div class="infobox blue"><h4>ℹ️ Selamat datang di SIMERBAU</h4><p>Mulai dengan mengisi <strong>Inventaris Pohon</strong>, lalu lengkapi <strong>Daftar Periksa FSC</strong> untuk memantau kemajuan sertifikasi Anda.</p></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-head"><h3>📅 Log Aktivitas</h3></div>
+        <div class="card-body">
+          <div class="tl" id="ds-log">
+            <div class="tl-item">
+              <div class="tl-dot done">✓</div>
+              <div class="tl-date">Hari ini</div>
+              <div class="tl-title">SIMERBAU diinisialisasi</div>
+              <div class="tl-desc">Sistem siap digunakan</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>🌡️ Status Konservasi</h3></div>
+        <div class="card-body">
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px;">
+            <div style="background:var(--b100);border-radius:10px;padding:10px 14px;text-align:center;flex-shrink:0;">
+              <div style="font-size:11px;font-weight:700;color:var(--b700);text-transform:uppercase;">IUCN</div>
+              <div style="font-size:20px;font-weight:800;color:var(--b600);">VU</div>
+              <div style="font-size:10px;color:var(--b700);">Vulnerable</div>
+            </div>
+            <div style="font-size:13px;line-height:1.6;color:var(--n600);">Merbau (<em>Instia bijuga</em>) dikategorikan <strong>Rentan (VU)</strong> dalam Daftar Merah IUCN akibat eksploitasi berlebihan dan kehilangan habitat di Papua dan Maluku.</div>
+          </div>
+          <div class="infobox gold"><h4>Target Rasio Tanam:Tebang</h4><p>Standar FSC mensyaratkan minimum <strong>20 pohon ditanam</strong> untuk setiap pohon yang ditebang (1:20) pada spesies yang dikategorikan VU.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ ENSIKLOPEDIA ═══════════════════ -->
+<section id="ensiklopedia" class="section">
+  <div class="ph">
+    <div class="ph-left"><h2>Ensiklopedia Kayu Merbau</h2><p>Informasi ilmiah lengkap tentang <em>Instia bijuga</em> (Colebr.) Kuntze</p></div>
+  </div>
+
+  <div class="hero-merbau">
+    <img src="https://images.unsplash.com/photo-1448375240586-882707db888b?w=1200&q=80" alt="Hutan tropis Papua tempat merbau tumbuh">
+    <div class="hero-overlay">
+      <h1>Merbau — Kayu Besi Hutan Tropis</h1>
+      <p>Pohon legenda Papua dan Indo-Pasifik yang kayu intinya berwarna coklat kemerahan gelap, tahan lama ratusan tahun, dan menjadi primadona ekspor kayu dunia.</p>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="card">
+        <div class="card-head"><h3>🔬 Klasifikasi Taksonomi</h3></div>
+        <div class="card-body">
+          <table class="spt">
+            <tr><td>Kingdom</td><td>Plantae</td></tr>
+            <tr><td>Divisi</td><td>Magnoliophyta</td></tr>
+            <tr><td>Kelas</td><td>Magnoliopsida</td></tr>
+            <tr><td>Ordo</td><td>Fabales</td></tr>
+            <tr><td>Famili</td><td><em>Fabaceae</em> (Leguminosae)</td></tr>
+            <tr><td>Subfamili</td><td><em>Caesalpinioideae</em></td></tr>
+            <tr><td>Genus</td><td><em>Instia</em> Kuntze</td></tr>
+            <tr><td>Spesies</td><td><em>Instia bijuga</em> (Colebr.) Kuntze</td></tr>
+            <tr><td>Sinonim</td><td><em>Afzelia bijuga, Eperua bijuga</em></td></tr>
+          </table>
+          <hr class="divider">
+          <div style="display:flex;flex-wrap:wrap;gap:6px;">
+            <span class="badge bg-gold">Merbau (Indonesia)</span>
+            <span class="badge bg-gold">Kayu Besi Papua</span>
+            <span class="badge bg-blue">Ipil (Filipina)</span>
+            <span class="badge bg-blue">Kwila (PNG)</span>
+            <span class="badge bg-teal">Miva (Vanuatu)</span>
+            <span class="badge bg-green">Pacific Teak</span>
+            <span class="badge bg-gray">Johnstone River Teak</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>🌲 Morfologi & Ciri Fisik</h3></div>
+        <div class="card-body prose">
+          <h4>Batang & Tajuk</h4>
+          <p>Pohon besar yang dapat mencapai tinggi 40–50 meter dengan diameter batang (DBH) hingga 150 cm pada pohon dewasa. Batang umumnya lurus, silindris, dengan banir/akar papan melebar 2–4 meter di pangkal. Kulit batang luar berwarna abu-abu kecoklatan, beralur dangkal. Tajuk melebar seperti payung dengan percabangan besar.</p>
+          <h4>Daun & Bunga</h4>
+          <p>Daun majemuk menyirip genap, panjang 20–30 cm, anak daun 3–5 pasang berbentuk oval-memanjang. Bunga kecil putih harum tersusun dalam malai di ujung ranting, muncul sepanjang tahun di daerah tropis basah.</p>
+          <h4>Buah & Biji</h4>
+          <p>Buah berbentuk polong pipih keras, panjang 10–20 cm, berwarna coklat kehitaman saat masak. Setiap polong berisi 1–4 biji berkulit keras berwarna hitam dengan arillus (salut biji) merah-jingga yang mengandung flavonoid aktif berpotensi obat.</p>
+          <h4>Kayu (Sifat Makroskopis)</h4>
+          <p>Kayu teras (<em>heartwood</em>) berwarna coklat kemerahan gelap hingga coklat kekuningan, sangat kontras dengan kayu gubal (<em>sapwood</em>) yang berwarna putih keabuan. Tekstur kasar, serat lurus hingga interlocking, mengandung endapan mineral kuning (<em>inclusions</em>) yang bersifat abrasif pada alat potong.</p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <div class="card-head"><h3>📍 Sebaran Alami</h3></div>
+        <div class="card-body">
+          <div class="infobox">
+            <h4>Asia Tenggara & Pasifik</h4>
+            <ul>
+              <li>Indonesia (Papua, Maluku, Sulawesi, Kalimantan)</li>
+              <li>Papua Nugini dan kepulauan sekitarnya</li>
+              <li>Filipina (Palawan, Mindanao)</li>
+              <li>Malaysia (Sabah, Sarawak)</li>
+              <li>Kepulauan Solomon, Vanuatu, Fiji</li>
+              <li>Myanmar, Thailand selatan</li>
+              <li>Queensland, Australia (populasi kecil)</li>
+            </ul>
+          </div>
+          <div class="infobox blue">
+            <h4>Habitat Alami</h4>
+            <p>Tumbuh di hutan hujan tropis dataran rendah hingga ketinggian 800 mdpl, terutama pada tanah alluvial subur dekat sungai. Membutuhkan curah hujan >2.000 mm/tahun. Toleran terhadap banjir periodik.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>⚙️ Sifat & Kegunaan Kayu</h3></div>
+        <div class="card-body">
+          <div class="prop-row"><span class="prop-label">Kerapatan kering udara</span><span class="prop-val">800–1.040 kg/m³</span></div>
+          <div class="prop-row"><span class="prop-label">MOR (Modulus of Rupture)</span><span class="prop-val">130–200 MPa</span></div>
+          <div class="prop-row"><span class="prop-label">MOE (Modulus of Elasticity)</span><span class="prop-val">14.000–20.000 MPa</span></div>
+          <div class="prop-row"><span class="prop-label">Kekerasan (Janka)</span><span class="prop-val">8.200–9.500 N</span></div>
+          <div class="prop-row"><span class="prop-label">Kelas kuat</span><span class="prop-val">I – II</span></div>
+          <div class="prop-row"><span class="prop-label">Kelas awet</span><span class="prop-val">I (sangat awet)</span></div>
+          <div class="prop-row"><span class="prop-label">Kandungan silika</span><span class="prop-val">0,2–3,5%</span></div>
+          <hr class="divider">
+          <p style="font-size:12px;color:var(--n600);margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Kegunaan Utama</p>
+          <div style="display:flex;flex-wrap:wrap;gap:5px;">
+            <span class="badge bg-green">Lantai parket</span>
+            <span class="badge bg-green">Konstruksi berat</span>
+            <span class="badge bg-green">Jembatan & dermaga</span>
+            <span class="badge bg-blue">Furnitur premium</span>
+            <span class="badge bg-blue">Decking luar ruang</span>
+            <span class="badge bg-gold">Kapal & perahu</span>
+            <span class="badge bg-gold">Bantalan rel kereta</span>
+            <span class="badge bg-purple">Produk nilai tinggi</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>🌱 Ekologi & Daur Hidup</h3></div>
+        <div class="card-body">
+          <div class="prop-row"><span class="prop-label">Siklus tebang minimum</span><span class="prop-val">40–60 tahun</span></div>
+          <div class="prop-row"><span class="prop-label">DBH layak tebang (FSC)</span><span class="prop-val">≥ 50 cm</span></div>
+          <div class="prop-row"><span class="prop-label">Regenerasi alam</span><span class="prop-val">Lambat (shade tolerant)</span></div>
+          <div class="prop-row"><span class="prop-label">Penyebaran biji</span><span class="prop-val">Zoochory & Hydrochory</span></div>
+          <div class="prop-row"><span class="prop-label">Status IUCN Red List</span><span class="prop-val">Vulnerable (VU)</span></div>
+          <div class="prop-row"><span class="prop-label">CITES Appendix</span><span class="prop-val">Tidak terdaftar (2024)</span></div>
+          <div class="prop-row"><span class="prop-label">Status P.106/KLHK</span><span class="prop-val">Bukan jenis dilindungi</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ GALERI ═══════════════════ -->
+<section id="galeri" class="section">
+  <div class="ph">
+    <div class="ph-left"><h2>Galeri & Panduan Identifikasi</h2><p>Foto referensi untuk identifikasi lapangan pohon merbau</p></div>
+  </div>
+
+  <div class="photo-grid">
+    <div class="photo-item">
+      <img src="https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?w=600&q=80" alt="Hutan Papua">
+      <div class="photo-cap">Habitat Hutan Hujan Tropis Papua</div>
+    </div>
+    <div class="photo-item">
+      <img src="https://images.unsplash.com/photo-1503785640985-f62e3aeee448?w=600&q=80" alt="Pohon besar hutan">
+      <div class="photo-cap">Tegakan Pohon Merbau Dewasa</div>
+    </div>
+    <div class="photo-item">
+      <img src="https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=600&q=80" alt="Hutan tropis lebat">
+      <div class="photo-cap">Kanopi Hutan Produksi Lestari</div>
+    </div>
+    <div class="photo-item">
+      <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80" alt="Kayu coklat gelap">
+      <div class="photo-cap">Kayu Teras Merbau — Warna Coklat Kemerahan</div>
+    </div>
+    <div class="photo-item">
+      <img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&q=80" alt="Lantai kayu parket">
+      <div class="photo-cap">Produk Parket Lantai Kayu Merbau</div>
+    </div>
+    <div class="photo-item">
+      <img src="https://images.unsplash.com/photo-1448375240586-882707db888b?w=600&q=80" alt="Hutan dengan cahaya">
+      <div class="photo-cap">Hutan Hujan Tropis — Ekosistem Kritis</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-head"><h3>🔍 Ciri Identifikasi Lapangan</h3></div>
+      <div class="card-body">
+        <div class="infobox">
+          <h4>✅ Identifikasi Batang</h4>
+          <ul>
+            <li>Kulit luar abu-abu kecoklatan, beralur tak beraturan</li>
+            <li>Banir/akar papan lebar menyolok (2–5 m dari tanah)</li>
+            <li>Kulit dalam mengeluarkan eksudat kemerahan saat diiris</li>
+            <li>Kayu gubal putih keabuan, sangat berbeda dari kayu teras</li>
+          </ul>
+        </div>
+        <div class="infobox gold">
+          <h4>🍃 Identifikasi Daun & Bunga</h4>
+          <ul>
+            <li>Daun majemuk menyirip genap, anak daun 3–5 pasang</li>
+            <li>Permukaan daun mengkilap, tulang daun menonjol</li>
+            <li>Bunga putih harum dalam malai terminal</li>
+            <li>Tidak menggugurkan daun (evergreen)</li>
+          </ul>
+        </div>
+        <div class="infobox red">
+          <h4>⚠️ Jenis Mudah Tertukar</h4>
+          <ul>
+            <li><em>Intsia palembanica</em> — Merbau daratan, daun lebih kecil</li>
+            <li><em>Pericopsis mooniana</em> — Kayu kuku, warna lebih pucat</li>
+            <li><em>Sindora supa</em> — Supa, tidak ada bercak kuning</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-head"><h3>📸 Tips Dokumentasi Lapangan</h3></div>
+        <div class="card-body prose">
+          <h4>Foto yang Harus Diambil</h4>
+          <ul>
+            <li>Foto batang keseluruhan dari jarak 10–15 m</li>
+            <li>Foto banir/akar papan dari dekat</li>
+            <li>Foto kulit batang close-up</li>
+            <li>Foto irisan kulit menunjukkan eksudat</li>
+            <li>Foto daun, bunga, atau buah (jika ada)</li>
+            <li>Foto plat GPS/penomoran di batang</li>
+          </ul>
+          <h4>Data yang Dicatat</h4>
+          <ul>
+            <li>Koordinat GPS (lintang, bujur, elevasi)</li>
+            <li>DBH diukur pada 1,3 m dari permukaan tanah</li>
+            <li>Tinggi total (estimasi) dan tinggi bebas cabang</li>
+            <li>Kondisi kesehatan pohon (A/B/C/D)</li>
+            <li>Posisi dalam blok tebang / kawasan perlindungan</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>📊 Kelas Kesehatan Pohon</h3></div>
+        <div class="card-body">
+          <div class="prop-row"><span class="badge bg-green">Kelas A</span><span style="font-size:13px;">Pohon sehat, bentuk ideal, tidak ada kerusakan</span></div>
+          <div class="prop-row"><span class="badge bg-teal">Kelas B</span><span style="font-size:13px;">Sedikit cacat, kerusakan <25%, masih produktif</span></div>
+          <div class="prop-row"><span class="badge bg-gold">Kelas C</span><span style="font-size:13px;">Kerusakan 25–50%, perlu pemantauan intensif</span></div>
+          <div class="prop-row"><span class="badge bg-red">Kelas D</span><span style="font-size:13px;">Kerusakan >50%, tidak layak tebang / dilindungi</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ INVENTARIS ═══════════════════ -->
+<section id="inventaris" class="section">
+  <div class="ph">
+    <div class="ph-left"><h2>Inventaris Pohon</h2><p>Pencatatan tegakan merbau di seluruh blok kelola</p></div>
+    <button class="btn btn-primary" onclick="openM('m-pohon')">+ Tambah Pohon</button>
+  </div>
+  <div class="infobox blue" style="margin-bottom:1.25rem;">
+    <h4>ℹ️ Standar Inventarisasi FSC</h4>
+    <p>Hanya pohon dengan DBH ≥ 50 cm yang boleh dikategorikan "Layak Tebang". Pohon dalam kawasan HCV, buffer riparian (±50 m sungai), dan lereng >40° wajib dikategorikan "Perlindungan".</p>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <h3>🌳 Daftar Tegakan</h3>
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="srch-pohon" placeholder="Cari ID / blok..." oninput="filterInv()" style="width:180px;padding:6px 10px;border:1px solid var(--n300);border-radius:var(--radius);font-size:13px;">
+        <select id="flt-status" onchange="filterInv()" style="padding:6px 10px;border:1px solid var(--n300);border-radius:var(--radius);font-size:13px;">
+          <option value="">Semua Status</option>
+          <option value="layak">Layak Tebang</option>
+          <option value="perlindungan">Perlindungan</option>
+          <option value="pemantauan">Pemantauan</option>
+          <option value="ditebang">Ditebang</option>
+        </select>
+      </div>
+    </div>
+    <div class="tw">
+      <table>
+        <thead><tr>
+          <th>ID Pohon</th><th>Blok/Petak</th><th>DBH (cm)</th><th>Tinggi (m)</th>
+          <th>Vol. Est. (m³)</th><th>Kelas</th><th>Koordinat</th><th>Status</th><th>Tanggal</th><th>Aksi</th>
+        </tr></thead>
+        <tbody id="tb-pohon">
+          <tr><td colspan="10"><div class="empty-st"><div class="ei">🌿</div><p>Belum ada data pohon. Klik "+ Tambah Pohon" untuk memulai.</p></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ PANEN ═══════════════════ -->
+<section id="panen" class="section">
+  <div class="ph">
+    <div class="ph-left"><h2>Panen & Produksi</h2><p>Pencatatan penebangan menggunakan teknik RIL sesuai standar FSC</p></div>
+    <button class="btn btn-primary" onclick="openM('m-panen')">+ Catat Panen</button>
+  </div>
+  <div class="infobox red" style="margin-bottom:1.25rem;">
+    <h4>⛔ Larangan Keras FSC – Merbau</h4>
+    <p>Penebangan pohon dengan DBH &lt; 50 cm, pohon dalam kawasan HCV, pohon induk berbiji (seed trees), dan pohon dalam zona riparian 50 m dari badan air merupakan pelanggaran serius yang dapat mencabut sertifikasi FSC.</p>
+  </div>
+  <div class="card">
+    <div class="card-head"><h3>🪵 Riwayat Kegiatan Panen</h3></div>
+    <div class="tw">
+      <table>
+        <thead><tr>
+          <th>No. Seri</th><th>Tanggal</th><th>ID Pohon</th><th>Blok</th>
+          <th>Volume (m³)</th><th>Teknik</th><th>Operator</th><th>No. Izin</th><th>Status</th><th>Aksi</th>
+        </tr></thead>
+        <tbody id="tb-panen">
+          <tr><td colspan="10"><div class="empty-st"><div class="ei">🪵</div><p>Belum ada catatan panen.</p></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ PENANAMAN ═══════════════════ -->
+<section id="penanaman" class="section">
+  <div class="ph">
+    <div class="ph-left"><h2>Penanaman & Rehabilitasi</h2><p>Program penghijauan dan rehabilitasi lahan pasca-panen</p></div>
+    <button class="btn btn-primary" onclick="openM('m-tanam')">+ Catat Penanaman</button>
+  </div>
+  <div class="two-col-equal" style="margin-bottom:1.5rem;">
+    <div class="infobox">
+      <h4>🌱 Kewajiban Reboisasi FSC</h4>
+      <ul>
+        <li>Rasio penanaman minimum <strong>1:20</strong> (1 tebang : 20 tanam) untuk <em>Instia bijuga</em></li>
+        <li>Penanaman pengayaan di areal bekas tebangan dalam 1 tahun</li>
+        <li>Pemeliharaan minimal 3 tahun hingga pohon establish</li>
+        <li>Dilarang menggunakan herbisida pada area reboisasi</li>
+      </ul>
+    </div>
+    <div class="infobox gold">
+      <h4>🌿 Teknik Penanaman Merbau</h4>
+      <ul>
+        <li>Lubang tanam: 40×40×40 cm, kompos dasar 2 kg</li>
+        <li>Jarak tanam: 5×5 m (pengayaan) atau 3×3 m (rehabilitasi)</li>
+        <li>Benih dari sumber benih terverifikasi FSC</li>
+        <li>Penyulaman pada bulan ke-3 jika kematian >10%</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head"><h3>🌱 Catatan Penanaman</h3></div>
+    <div class="tw">
+      <table>
+        <thead><tr>
+          <th>ID Kegiatan</th><th>Tanggal</th><th>Lokasi/Blok</th><th>Jumlah Bibit</th>
+          <th>Sumber Benih</th><th>Penanggung Jawab</th><th>Persentase Hidup</th><th>Status</th><th>Aksi</th>
+        </tr></thead>
+        <tbody id="tb-tanam">
+          <tr><td colspan="9"><div class="empty-st"><div class="ei">🌱</div><p>Belum ada catatan penanaman.</p></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head"><h3>📊 Rasio Tanam vs Tebang</h3></div>
+    <div class="card-body" id="rasio-panel">
+      <p style="color:var(--n500);font-size:14px;">Data akan otomatis dihitung setelah ada catatan panen dan penanaman.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ PATROLI ═══════════════════ -->
+<section id="patroli" class="section">
+  <div class="ph">
+    <div class="ph-left"><h2>Patroli & Pengawasan Hutan</h2><p>Pencatatan kegiatan pengawasan untuk mencegah penebangan liar</p></div>
+    <button class="btn btn-primary" onclick="openM('m-patroli')">+ Catat Patroli</button>
+  </div>
+  <div class="infobox">
+    <h4>🛡️ Kewajiban Pengawasan FSC</h4>
+    <p>FSC mensyaratkan sistem patroli rutin minimal <strong>2× per bulan</strong> per blok kelola. Setiap kejadian ilegal (penebangan liar, perambahan, kebakaran) harus dilaporkan dalam 24 jam dan ditindaklanjuti dalam 72 jam.</p>
+  </div>
+  <div class="card" style="margin-top:1rem;">
+    <div class="card-head"><h3>🛡️ Log Patroli</h3></div>
+    <div class="tw">
+      <table>
+        <thead><tr>
+          <th>ID Patroli</th><th>Tanggal</th><th>Rute/Blok</th><th>Tim</th>
+          <th>Durasi (jam)</th><th>Temuan</th><th>Status Tindak Lanjut</th><th>Aksi</th>
+        </tr></thead>
+        <tbody id="tb-patroli">
+          <tr><td colspan="8"><div class="empty-st"><div class="ei">🛡️</div><p>Belum ada catatan patroli.</p></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ FSC INFO ═══════════════════ -->
+<section id="fsc-info" class="section">
+  <div class="ph">
+    <div class="ph-left"><h2>Forest Stewardship Council (FSC)</h2><p>Sistem sertifikasi pengelolaan hutan yang bertanggung jawab</p></div>
+    <button class="btn btn-gold" onclick="go('fsc-checklist')">Mulai Daftar Periksa →</button>
+  </div>
+
+  <div class="hero-merbau" style="height:220px;">
+    <img src="https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=1200&q=80" alt="Hutan lestari">
+    <div class="hero-overlay">
+      <h1 style="font-size:22px;">FSC — Menjamin Hutan Dikelola Secara Bertanggung Jawab</h1>
+      <p>Didirikan 1993, FSC adalah organisasi nirlaba internasional yang mengembangkan standar pengelolaan hutan berbasis ekologi, sosial, dan ekonomi.</p>
+    </div>
+  </div>
+
+  <div class="three-col" style="margin-bottom:1.5rem;">
+    <div class="card" style="margin-bottom:0;">
+      <div class="card-body" style="text-align:center;padding:1.5rem 1rem;">
+        <div style="font-size:36px;margin-bottom:8px;">🌍</div>
+        <div style="font-size:22px;font-weight:700;color:var(--g700);">200+ juta ha</div>
+        <div style="font-size:12px;color:var(--n500);margin-top:4px;">Hutan tersertifikasi FSC di seluruh dunia</div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:0;">
+      <div class="card-body" style="text-align:center;padding:1.5rem 1rem;">
+        <div style="font-size:36px;margin-bottom:8px;">🏭</div>
+        <div style="font-size:22px;font-weight:700;color:var(--g700);">40.000+</div>
+        <div style="font-size:12px;color:var(--n500);margin-top:4px;">Pemegang sertifikat CoC di 120 negara</div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:0;">
+      <div class="card-body" style="text-align:center;padding:1.5rem 1rem;">
+        <div style="font-size:36px;margin-bottom:8px;">🇮🇩</div>
+        <div style="font-size:22px;font-weight:700;color:var(--g700);">~3 juta ha</div>
+        <div style="font-size:12px;color:var(--n500);margin-top:4px;">Hutan tersertifikasi FSC di Indonesia</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="card">
+        <div class="card-head"><h3>📋 10 Prinsip FSC</h3></div>
+        <div class="card-body">
+          <div class="cert-step"><div class="cert-num">1</div><div><div class="cert-title">Kepatuhan Terhadap Hukum</div><div class="cert-desc">Pengelolaan hutan harus mematuhi semua hukum yang berlaku di negara tempat beroperasi dan perjanjian internasional yang telah diratifikasi.</div></div></div>
+          <div class="cert-step"><div class="cert-num">2</div><div><div class="cert-title">Hak-hak Pekerja & Kondisi Kerja</div><div class="cert-desc">Pengelola hutan harus menjaga atau meningkatkan kondisi sosial dan ekonomi pekerja hutan serta komunitas lokal yang bergantung pada hutan.</div></div></div>
+          <div class="cert-step"><div class="cert-num">3</div><div><div class="cert-title">Hak Masyarakat Adat</div><div class="cert-desc">Hak hukum dan adat masyarakat adat atas kepemilikan, penggunaan, dan pengelolaan lahannya harus diakui dan dihormati (FPIC).</div></div></div>
+          <div class="cert-step"><div class="cert-num">4</div><div><div class="cert-title">Hubungan dengan Masyarakat</div><div class="cert-desc">Pengelolaan hutan harus memelihara atau meningkatkan kesejahteraan jangka panjang masyarakat lokal.</div></div></div>
+          <div class="cert-step"><div class="cert-num">5</div><div><div class="cert-title">Manfaat dari Hutan</div><div class="cert-desc">Pengelolaan hutan harus mendorong penggunaan sumber daya dan jasa hutan yang efisien untuk menjamin keberlanjutan ekonomi.</div></div></div>
+          <div class="cert-step"><div class="cert-num">6</div><div><div class="cert-title">Nilai & Dampak Lingkungan</div><div class="cert-desc">Pengelolaan hutan harus mempertahankan, mengkonservasi, dan memulihkan jasa ekosistem serta keanekaragaman hayati hutan.</div></div></div>
+          <div class="cert-step"><div class="cert-num">7</div><div><div class="cert-title">Rencana Pengelolaan</div><div class="cert-desc">Rencana pengelolaan hutan harus disusun, diimplementasikan, dipantau, dan diperbarui sesuai dengan skala dan intensitas operasi.</div></div></div>
+          <div class="cert-step"><div class="cert-num">8</div><div><div class="cert-title">Pemantauan & Penilaian</div><div class="cert-desc">Pemantauan harus dilakukan untuk menilai kondisi hutan, hasil panen, rantai pasok, kegiatan pengelolaan, dan dampak sosial dan lingkungan.</div></div></div>
+          <div class="cert-step"><div class="cert-num">9</div><div><div class="cert-title">Nilai Konservasi Tinggi (HCV)</div><div class="cert-desc">Kegiatan pengelolaan hutan harus mempertahankan dan/atau meningkatkan atribut yang mendefinisikan kawasan Nilai Konservasi Tinggi.</div></div></div>
+          <div class="cert-step"><div class="cert-num">10</div><div><div class="cert-title">Implementasi Kegiatan Pengelolaan</div><div class="cert-desc">Kegiatan pengelolaan hutan, termasuk pemanenan, pemrosesan, dan transportasi, harus dipilih dan dilaksanakan sesuai kebijakan dan sasaran ekonomi, lingkungan, dan sosial.</div></div></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-head"><h3>🏆 Tahapan Memperoleh Sertifikasi FSC</h3></div>
+        <div class="card-body">
+          <div class="cert-step"><div class="cert-num">1</div><div><div class="cert-title">Persiapan Awal (6–12 bulan)</div><div class="cert-desc">Pelajari standar FSC, identifikasi kesenjangan (gap analysis), dan susun rencana perbaikan.</div></div></div>
+          <div class="cert-step"><div class="cert-num">2</div><div><div class="cert-title">Pilih Badan Sertifikasi Terakreditasi</div><div class="cert-desc">Hubungi CB (Certification Body) yang diakreditasi ASI: SGS, Bureau Veritas, Rainforest Alliance, dll.</div></div></div>
+          <div class="cert-step"><div class="cert-num">3</div><div><div class="cert-title">Pre-Assessment (opsional)</div><div class="cert-desc">Audit pendahuluan tidak resmi untuk mengidentifikasi kekurangan sebelum audit utama.</div></div></div>
+          <div class="cert-step"><div class="cert-num">4</div><div><div class="cert-title">Audit Sertifikasi Penuh</div><div class="cert-desc">Tim auditor melakukan pemeriksaan dokumen, wawancara pemangku kepentingan, dan kunjungan lapangan 3–7 hari.</div></div></div>
+          <div class="cert-step"><div class="cert-num">5</div><div><div class="cert-title">Penyelesaian Kondisi & NCR</div><div class="cert-desc">Selesaikan semua Corrective Action Requests (CAR) dan kondisi yang ditemukan auditor.</div></div></div>
+          <div class="cert-step"><div class="cert-num">6</div><div><div class="cert-title">Penerbitan Sertifikat FSC</div><div class="cert-desc">Sertifikat berlaku 5 tahun dengan audit surveilans tahunan untuk mempertahankan status.</div></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>💰 Estimasi Biaya Sertifikasi</h3></div>
+        <div class="card-body">
+          <div class="prop-row"><span class="prop-label">Pre-assessment</span><span class="prop-val">USD 2.000–5.000</span></div>
+          <div class="prop-row"><span class="prop-label">Audit sertifikasi</span><span class="prop-val">USD 5.000–25.000</span></div>
+          <div class="prop-row"><span class="prop-label">Biaya surveilans/tahun</span><span class="prop-val">USD 2.000–8.000</span></div>
+          <div class="prop-row"><span class="prop-label">Persiapan dokumen</span><span class="prop-val">USD 10.000–50.000</span></div>
+          <div class="prop-row"><span class="prop-label">Biaya royalti label FSC</span><span class="prop-val">USD 500–2.000/tahun</span></div>
+          <hr class="divider">
+          <div class="infobox gold"><h4>💡 Insentif Pasar</h4><p>Kayu bersertifikat FSC dapat memperoleh <strong>premium harga 5–20%</strong> di pasar ekspor (Eropa, Amerika Utara, Jepang) dan memenuhi syarat wajib lelang pemerintah di banyak negara.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ FSC CHECKLIST ═══════════════════ -->
+<section id="fsc-checklist" class="section">
+  <div class="ph">
+    <div class="ph-left"><h2>Daftar Periksa FSC</h2><p>Monitor kemajuan pemenuhan 10 Prinsip & 20 Kriteria Inti FSC untuk Merbau</p></div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-outline" onclick="resetFSC()">↺ Reset</button>
+      <button class="btn btn-gold" onclick="go('laporan')">Lihat Laporan →</button>
+    </div>
+  </div>
+
+  <div class="stat-grid" style="grid-template-columns:repeat(3,1fr);">
+    <div class="stat-card sc-g"><div class="stat-label">Terpenuhi</div><div class="stat-val" id="ck-done">0</div><div class="stat-sub">kriteria FSC</div></div>
+    <div class="stat-card sc-b"><div class="stat-label">Belum Terpenuhi</div><div class="stat-val" id="ck-rem">20</div><div class="stat-sub">perlu tindakan</div></div>
+    <div class="stat-card sc-r"><div class="stat-label">Persentase</div><div class="stat-val" id="ck-pct">0%</div><div class="stat-sub">kemajuan keseluruhan</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>✅ Daftar Periksa Lengkap per Prinsip</h3></div>
+    <div class="card-body">
+      <div class="ptab-row" id="ptabs"></div>
+      <div id="ck-content"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ RANTAI PASOK ═══════════════════ -->
+<section id="rantai" class="section">
+  <div class="ph">
+    <div class="ph-left"><h2>Rantai Pasok / Chain of Custody</h2><p>Pelacakan pergerakan kayu merbau dari hutan ke konsumen</p></div>
+    <button class="btn btn-primary" onclick="openM('m-coc')">+ Tambah Dokumen CoC</button>
+  </div>
+  <div class="two-col">
+    <div>
+      <div class="card">
+        <div class="card-head"><h3>🔗 Dokumen CoC Tersimpan</h3></div>
+        <div class="tw">
+          <table>
+            <thead><tr><th>No. Dok</th><th>Tanggal</th><th>Dari</th><th>Ke</th><th>Volume</th><th>Verifikasi</th><th>Aksi</th></tr></thead>
+            <tbody id="tb-coc">
+              <tr><td colspan="7"><div class="empty-st"><div class="ei">🔗</div><p>Belum ada dokumen CoC.</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-head"><h3>📊 Alur Rantai Pasok</h3></div>
+        <div class="card-body" style="overflow-x:auto;">
+          <div style="display:flex;flex-direction:column;gap:4px;min-width:200px;">
+            <div style="background:var(--g600);color:white;border-radius:8px;padding:10px;font-size:12px;font-weight:600;text-align:center;">🌳 Hutan Kelola<br><small style="font-weight:400;opacity:.8;">Inventarisasi & Penebangan RIL</small></div>
+            <div style="text-align:center;color:var(--g400);font-size:18px;">↓</div>
+            <div style="background:var(--b600);color:white;border-radius:8px;padding:10px;font-size:12px;font-weight:600;text-align:center;">🏭 TPK / Logpond<br><small style="font-weight:400;opacity:.8;">Tempat Penimbunan Kayu</small></div>
+            <div style="text-align:center;color:var(--g400);font-size:18px;">↓</div>
+            <div style="background:#3a7bd5;color:white;border-radius:8px;padding:10px;font-size:12px;font-weight:600;text-align:center;">🪚 Industri Pengolahan<br><small style="font-weight:400;opacity:.8;">Sawmill / Plywood / Parket</small></div>
+            <div style="text-align:center;color:var(--g400);font-size:18px;">↓</div>
+            <div style="background:#2a9d8f;color:white;border-radius:8px;padding:10px;font-size:12px;font-weight:600;text-align:center;">📦 Pedagang / Eksportir<br><small style="font-weight:400;opacity:.8;">Dengan Sertifikat CoC FSC</small></div>
+            <div style="text-align:center;color:var(--g400);font-size:18px;">↓</div>
+            <div style="background:var(--g800);color:white;border-radius:8px;padding:10px;font-size:12px;font-weight:600;text-align:center;">🏠 Konsumen Akhir<br><small style="font-weight:400;opacity:.8;">Produk Berlabel FSC®</small></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>📋 Dokumen Wajib Tiap Titik</h3></div>
+        <div class="card-body prose">
+          <ul>
+            <li>Sertifikat IUPHHK-HA / SK Pengelolaan</li>
+            <li>SKSHHK (Surat Keterangan Sahnya Hasil Hutan Kayu)</li>
+            <li>Nota Angkutan Kayu (NAK)</li>
+            <li>Faktur Angkutan Kayu Bulat (FAKB)</li>
+            <li>Dokumen V-Legal / FSC CoC Certificate</li>
+            <li>Packing List & Invoice Ekspor</li>
+            <li>Bill of Lading (untuk ekspor)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ DOKUMEN ═══════════════════ -->
+<section id="dokumen" class="section">
+  <div class="ph">
+    <div class="ph-left"><h2>Dokumen & Perizinan</h2><p>Manajemen dokumen legalitas untuk sertifikasi FSC</p></div>
+    <button class="btn btn-primary" onclick="openM('m-dokumen')">+ Tambah Dokumen</button>
+  </div>
+  <div class="card">
+    <div class="card-head"><h3>📁 Daftar Dokumen</h3></div>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Nama Dokumen</th><th>Jenis</th><th>No. Dokumen</th><th>Terbit</th><th>Berlaku Hingga</th><th>Status</th><th>Aksi</th></tr></thead>
+        <tbody id="tb-dok">
+          <tr><td colspan="7"><div class="empty-st"><div class="ei">📁</div><p>Tambahkan dokumen perizinan Anda.</p></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head"><h3>📋 Dokumen Wajib Sertifikasi FSC-FM</h3></div>
+    <div class="card-body">
+      <div class="two-col-equal">
+        <div>
+          <p style="font-size:12px;font-weight:700;color:var(--n500);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Legalitas Dasar</p>
+          <div style="display:flex;flex-direction:column;gap:5px;">
+            <div style="font-size:13px;padding:7px 10px;background:var(--n100);border-radius:6px;display:flex;align-items:center;gap:8px;"><span>📄</span> SK IUPHHK-HA / IUPHHKn</div>
+            <div style="font-size:13px;padding:7px 10px;background:var(--n100);border-radius:6px;display:flex;align-items:center;gap:8px;"><span>📄</span> AMDAL / UKL-UPL</div>
+            <div style="font-size:13px;padding:7px 10px;background:var(--n100);border-radius:6px;display:flex;align-items:center;gap:8px;"><span>📄</span> Akta Perusahaan & NPWP</div>
+            <div style="font-size:13px;padding:7px 10px;background:var(--n100);border-radius:6px;display:flex;align-items:center;gap:8px;"><span>📄</span> Rencana Kerja Usaha (RKU)</div>
+            <div style="font-size:13px;padding:7px 10px;background:var(--n100);border-radius:6px;display:flex;align-items:center;gap:8px;"><span>📄</span> Rencana Kerja Tahunan (RKT)</div>
+          </div>
+        </div>
+        <div>
+          <p style="font-size:12px;font-weight:700;color:var(--n500);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Teknis & Sosial</p>
+          <div style="display:flex;flex-direction:column;gap:5px;">
+            <div style="font-size:13px;padding:7px 10px;background:var(--n100);border-radius:6px;display:flex;align-items:center;gap:8px;"><span>📄</span> Penilaian HCV (High Conservation Value)</div>
+            <div style="font-size:13px;padding:7px 10px;background:var(--n100);border-radius:6px;display:flex;align-items:center;gap:8px;"><span>📄</span> Dokumen FPIC Masyarakat Adat</div>
+            <div style="font-size:13px;padding:7px 10px;background:var(--n100);border-radius:6px;display:flex;align-items:center;gap:8px;"><span>📄</span> SOP Penebangan (RIL)</div>
+            <div style="font-size:13px;padding:7px 10px;background:var(--n100);border-radius:6px;display:flex;align-items:center;gap:8px;"><span>📄</span> Laporan Monitoring Tahunan</div>
+            <div style="font-size:13px;padding:7px 10px;background:var(--n100);border-radius:6px;display:flex;align-items:center;gap:8px;"><span>📄</span> Sertifikat Pelatihan K3 Operator</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ KALKULATOR ═══════════════════ -->
+<section id="kalkulator" class="section">
+  <div class="ph"><div class="ph-left"><h2>Kalkulator Volume Kayu</h2><p>Estimasi volume menggunakan rumus standar kehutanan Indonesia</p></div></div>
+
+  <div class="two-col-equal">
+    <div>
+      <div class="card">
+        <div class="card-head"><h3>📐 Kalkulator Volume Pohon Berdiri</h3></div>
+        <div class="card-body">
+          <div class="fg"><label>DBH — Diameter Setinggi Dada (cm)</label><input type="number" id="kc-dbh" placeholder="e.g. 75" value="75" min="10" step="1" oninput="hitungVol()"></div>
+          <div class="fg"><label>Tinggi Total Pohon (m)</label><input type="number" id="kc-t" placeholder="e.g. 35" value="35" min="1" step="0.5" oninput="hitungVol()"></div>
+          <div class="fg">
+            <label>Faktor Bentuk (f)</label>
+            <select id="kc-ff" onchange="hitungVol()">
+              <option value="0.7">0.70 — Merbau / Kayu keras tropis (default)</option>
+              <option value="0.6">0.60 — Kayu lunak / bentuk tidak beraturan</option>
+              <option value="0.65">0.65 — Standar umum Dipterocarp</option>
+              <option value="0.75">0.75 — Batang sangat lurus/silindris</option>
+            </select>
+          </div>
+          <div class="calc-box">
+            <div class="calc-label">Volume Kayu Bulat Estimasi</div>
+            <div class="calc-result" id="kc-hasil">—</div>
+            <div class="calc-label" id="kc-rumus">V = ¼π × d² × t × f</div>
+          </div>
+          <div style="margin-top:1rem;font-size:12px;color:var(--n500);">
+            <strong>Rumus:</strong> V = ¼π × (DBH/100)² × Tinggi × Faktor Bentuk<br>
+            <em>Catatan: Merupakan estimasi. Pengukuran aktual menggunakan alat ukur terkalibrasi.</em>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-head"><h3>🧮 Estimasi Nilai Kayu</h3></div>
+        <div class="card-body">
+          <div class="fg"><label>Volume Kayu (m³)</label><input type="number" id="kn-vol" placeholder="10.5" value="10.5" step="0.1" oninput="hitungNilai()"></div>
+          <div class="fg">
+            <label>Kelas Mutu Kayu</label>
+            <select id="kn-mutu" onchange="hitungNilai()">
+              <option value="4500000">Mutu A — Parket / Furnitur Premium (Rp 4.500.000/m³)</option>
+              <option value="3200000">Mutu B — Konstruksi / Decking (Rp 3.200.000/m³)</option>
+              <option value="2000000">Mutu C — Kayu pertukangan umum (Rp 2.000.000/m³)</option>
+            </select>
+          </div>
+          <div class="fg"><label>Premium FSC Bersertifikat (%)</label><input type="number" id="kn-prem" value="15" min="0" max="50" step="1" oninput="hitungNilai()"></div>
+          <div class="calc-box">
+            <div class="calc-label">Estimasi Nilai Kayu</div>
+            <div class="calc-result" id="kn-hasil">—</div>
+            <div class="calc-label" id="kn-detail">termasuk premium FSC</div>
+          </div>
+          <div style="margin-top:1rem;font-size:12px;color:var(--n500);">
+            <em>Harga referensi bersifat indikatif. Harga aktual tergantung pasar, pembeli, dan negara tujuan.</em>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>🌱 Kalkulator Kebutuhan Bibit</h3></div>
+        <div class="card-body">
+          <div class="fg"><label>Luas Areal Rehabilitasi (ha)</label><input type="number" id="kb-luas" value="1" min="0.1" step="0.1" oninput="hitungBibit()"></div>
+          <div class="fg">
+            <label>Pola Tanam</label>
+            <select id="kb-pola" onchange="hitungBibit()">
+              <option value="400">5×5 m — Pengayaan (400 pohon/ha)</option>
+              <option value="1111">3×3 m — Rehabilitasi intensif (1.111 pohon/ha)</option>
+              <option value="625">4×4 m — Rehabilitasi standar (625 pohon/ha)</option>
+            </select>
+          </div>
+          <div class="fg"><label>Cadangan Penyulaman (%)</label><input type="number" id="kb-sulam" value="20" min="0" max="50" step="5" oninput="hitungBibit()"></div>
+          <div class="calc-box">
+            <div class="calc-label">Total Bibit Dibutuhkan</div>
+            <div class="calc-result" id="kb-hasil">—</div>
+            <div class="calc-label" id="kb-det">pohon (termasuk cadangan sulaman)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ PETA ═══════════════════ -->
+<section id="peta" class="section">
+  <div class="ph"><div class="ph-left"><h2>Peta Blok Kelola</h2><p>Visualisasi tata ruang areal pengelolaan hutan merbau</p></div></div>
+  <div class="infobox gold" style="margin-bottom:1.25rem;"><h4>💡 Integrasi GIS</h4><p>Untuk sistem peta interaktif penuh, integrasikan dengan perangkat lunak GIS seperti QGIS, ArcGIS, atau platform webGIS (Mapbox, Leaflet.js). Peta di bawah ini merupakan ilustrasi skematik blok kelola.</p></div>
+  <div class="card">
+    <div class="card-head"><h3>🗺️ Skema Blok Kelola</h3></div>
+    <div class="card-body" style="overflow-x:auto;">
+      <svg viewBox="0 0 700 420" style="width:100%;max-width:700px;display:block;margin:0 auto;font-family:'Inter',sans-serif;" xmlns="http://www.w3.org/2000/svg">
+        <!-- Background -->
+        <rect width="700" height="420" fill="#f0f7f0" rx="10"/>
+        <!-- Areal konsesi outline -->
+        <rect x="40" y="30" width="620" height="360" fill="none" stroke="#2d6b2b" stroke-width="2.5" stroke-dasharray="8,4" rx="6"/>
+        <text x="350" y="22" text-anchor="middle" font-size="11" fill="#2d6b2b" font-weight="700">— — BATAS AREAL KONSESI — —</text>
+        <!-- Sungai -->
+        <path d="M 0 200 Q 150 180 200 210 Q 280 240 350 200 Q 420 160 500 190 Q 580 220 700 200" fill="none" stroke="#3a7bd5" stroke-width="8" opacity=".5"/>
+        <text x="60" y="215" font-size="11" fill="#1a4f99" font-style="italic">〰 Sungai Merbau</text>
+        <!-- Buffer riparian (50m) -->
+        <path d="M 0 165 Q 150 145 200 175 Q 280 205 350 165 Q 420 125 500 155 Q 580 185 700 165" fill="none" stroke="#3a7bd5" stroke-width="20" opacity=".10"/>
+        <path d="M 0 235 Q 150 215 200 245 Q 280 275 350 235 Q 420 195 500 225 Q 580 255 700 235" fill="none" stroke="#3a7bd5" stroke-width="20" opacity=".10"/>
+        <!-- Blok A -->
+        <rect x="60" y="50" width="180" height="130" fill="#2d6b2b" opacity=".18" rx="4"/>
+        <rect x="60" y="50" width="180" height="130" fill="none" stroke="#2d6b2b" stroke-width="1.5" rx="4"/>
+        <text x="150" y="108" text-anchor="middle" font-size="14" fill="#1a3318" font-weight="700">BLOK A</text>
+        <text x="150" y="126" text-anchor="middle" font-size="11" fill="#2d6b2b">Produksi — RKT 2024</text>
+        <text x="150" y="143" text-anchor="middle" font-size="10" fill="#3a8038">±1.200 ha</text>
+        <!-- Blok B -->
+        <rect x="260" y="50" width="180" height="130" fill="#52a050" opacity=".12" rx="4"/>
+        <rect x="260" y="50" width="180" height="130" fill="none" stroke="#3a8038" stroke-width="1.5" stroke-dasharray="5,3" rx="4"/>
+        <text x="350" y="108" text-anchor="middle" font-size="14" fill="#245522" font-weight="700">BLOK B</text>
+        <text x="350" y="126" text-anchor="middle" font-size="11" fill="#3a8038">Produksi — RKT 2025</text>
+        <text x="350" y="143" text-anchor="middle" font-size="10" fill="#52a050">±1.400 ha</text>
+        <!-- Blok C (rehabilitasi) -->
+        <rect x="460" y="50" width="160" height="130" fill="#b0ddb0" opacity=".3" rx="4"/>
+        <rect x="460" y="50" width="160" height="130" fill="none" stroke="#52a050" stroke-width="1.5" rx="4"/>
+        <text x="540" y="108" text-anchor="middle" font-size="14" fill="#245522" font-weight="700">BLOK C</text>
+        <text x="540" y="126" text-anchor="middle" font-size="11" fill="#3a8038">Rehabilitasi</text>
+        <text x="540" y="143" text-anchor="middle" font-size="10" fill="#52a050">±800 ha</text>
+        <!-- HCV Area -->
+        <ellipse cx="150" cy="320" rx="90" ry="55" fill="#fdefd0" opacity=".8" stroke="#c47828" stroke-width="2" stroke-dasharray="6,3"/>
+        <text x="150" y="316" text-anchor="middle" font-size="12" fill="#7a4510" font-weight="700">HCV AREA</text>
+        <text x="150" y="332" text-anchor="middle" font-size="10" fill="#9e5c1a">Dilarang Tebang</text>
+        <!-- Kawasan Lindung -->
+        <rect x="460" y="270" width="160" height="100" fill="#cfe2ff" opacity=".5" rx="4"/>
+        <rect x="460" y="270" width="160" height="100" fill="none" stroke="#3a7bd5" stroke-width="1.5" stroke-dasharray="5,3" rx="4"/>
+        <text x="540" y="314" text-anchor="middle" font-size="12" fill="#0a367a" font-weight="700">KAWASAN</text>
+        <text x="540" y="330" text-anchor="middle" font-size="12" fill="#0a367a" font-weight="700">LINDUNG</text>
+        <text x="540" y="348" text-anchor="middle" font-size="10" fill="#185fa5">±300 ha</text>
+        <!-- TPK -->
+        <rect x="290" y="340" width="80" height="50" fill="#f8d7da" opacity=".8" rx="4"/>
+        <text x="330" y="362" text-anchor="middle" font-size="11" fill="#842029" font-weight="700">TPK</text>
+        <text x="330" y="378" text-anchor="middle" font-size="10" fill="#9b2020">Log Pond</text>
+        <!-- Legenda -->
+        <rect x="56" y="390" width="600" height="25" fill="rgba(255,255,255,.8)" rx="4"/>
+        <rect x="66" y="397" width="12" height="12" fill="#2d6b2b" opacity=".4"/>
+        <text x="82" y="407" font-size="10" fill="#1a3318">Blok Produksi</text>
+        <rect x="156" y="397" width="12" height="12" fill="#b0ddb0"/>
+        <text x="172" y="407" font-size="10" fill="#1a3318">Rehabilitasi</text>
+        <rect x="246" y="397" width="12" height="12" fill="#fdefd0"/>
+        <text x="262" y="407" font-size="10" fill="#1a3318">HCV</text>
+        <rect x="296" y="397" width="12" height="12" fill="#cfe2ff"/>
+        <text x="312" y="407" font-size="10" fill="#1a3318">Kaw. Lindung</text>
+        <rect x="396" y="397" width="12" height="12" fill="#f8d7da"/>
+        <text x="412" y="407" font-size="10" fill="#1a3318">TPK</text>
+        <line x1="456" y1="403" x2="476" y2="403" stroke="#3a7bd5" stroke-width="4" opacity=".5"/>
+        <text x="480" y="407" font-size="10" fill="#1a3318">Sungai</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ LAPORAN ═══════════════════ -->
+<section id="laporan" class="section">
+  <div class="ph">
+    <div class="ph-left"><h2>Laporan & Ekspor</h2><p>Ringkasan operasional untuk keperluan audit dan sertifikasi FSC</p></div>
+    <button class="btn btn-gold" onclick="window.print()">🖨️ Cetak</button>
+  </div>
+
+  <div class="rpt-hero">
+    <div class="rpt-logo">FSC</div>
+    <div>
+      <div style="font-size:11px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;">Laporan Pengelolaan Hutan</div>
+      <div style="font-family:'Merriweather',serif;font-size:20px;font-weight:700;">Kayu Merbau — <em>Instia bijuga</em></div>
+      <div class="rpt-meta">
+        <span id="rpt-tgl">—</span>
+        <span>FSC Forest Management Standard</span>
+        <span>SIMERBAU v2.0</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="card">
+        <div class="card-head"><h3>📈 Ringkasan Produksi</h3></div>
+        <div class="card-body" id="rpt-prod"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>🌳 Ringkasan Inventaris</h3></div>
+        <div class="card-body" id="rpt-inv"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>🌱 Ringkasan Penanaman</h3></div>
+        <div class="card-body" id="rpt-tanam"></div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-head"><h3>✅ Status Sertifikasi FSC</h3></div>
+        <div class="card-body" id="rpt-fsc"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>📋 Catatan untuk Auditor</h3></div>
+        <div class="card-body">
+          <textarea id="audit-notes" style="width:100%;min-height:130px;padding:10px;border:1px solid var(--n300);border-radius:var(--radius);font-size:13px;font-family:'Inter',sans-serif;resize:vertical;" placeholder="Catatan khusus untuk tim auditor FSC..."></textarea>
+          <button class="btn btn-outline btn-sm" style="margin-top:8px;" onclick="saveNotes()">💾 Simpan Catatan</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>🏢 Badan Sertifikasi Terakreditasi</h3></div>
+        <div class="card-body">
+          <div class="prop-row"><span style="font-size:13px;">SGS Indonesia</span><span><a href="#" style="color:var(--g600);font-size:12px;">sgs.com</a></span></div>
+          <div class="prop-row"><span style="font-size:13px;">Bureau Veritas Indonesia</span><span><a href="#" style="color:var(--g600);font-size:12px;">bureauveritas.com</a></span></div>
+          <div class="prop-row"><span style="font-size:13px;">Rainforest Alliance</span><span><a href="#" style="color:var(--g600);font-size:12px;">rainforest-alliance.org</a></span></div>
+          <div class="prop-row"><span style="font-size:13px;">IFCC Indonesia (FSC affiliate)</span><span><a href="#" style="color:var(--g600);font-size:12px;">ifcc.int</a></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ REGULASI ═══════════════════ -->
+<section id="regulasi" class="section">
+  <div class="ph"><div class="ph-left"><h2>Regulasi & Standar</h2><p>Kerangka hukum pengelolaan kayu merbau di Indonesia</p></div></div>
+  <div class="two-col">
+    <div>
+      <div class="card">
+        <div class="card-head"><h3>⚖️ Peraturan Nasional Indonesia</h3></div>
+        <div class="card-body">
+          <div class="cert-step"><div class="cert-num" style="font-size:11px;width:40px;height:40px;border-radius:6px;">UU</div><div><div class="cert-title">UU No. 41 Tahun 1999 – Kehutanan</div><div class="cert-desc">Undang-undang dasar pengelolaan hutan Indonesia. Mengatur hutan produksi, kawasan konservasi, dan kewajiban reboisasi.</div></div></div>
+          <div class="cert-step"><div class="cert-num" style="font-size:11px;width:40px;height:40px;border-radius:6px;">PP</div><div><div class="cert-title">PP No. 6 Tahun 2007 jo PP No. 3 Tahun 2008</div><div class="cert-desc">Tentang Tata Hutan dan Penyusunan Rencana Pengelolaan Hutan, serta Pemanfaatan Hutan.</div></div></div>
+          <div class="cert-step"><div class="cert-num" style="font-size:11px;width:40px;height:40px;border-radius:6px;">P</div><div><div class="cert-title">PermenLHK P.30/MENLHK/2016 – SVLK</div><div class="cert-desc">Standar Verifikasi Legalitas Kayu (SVLK) yang menjadi syarat ekspor kayu dari Indonesia. FSC diakui setara SVLK.</div></div></div>
+          <div class="cert-step"><div class="cert-num" style="font-size:11px;width:40px;height:40px;border-radius:6px;">P</div><div><div class="cert-title">PermenLHK P.106/MENLHK/2018 – Jenis Dilindungi</div><div class="cert-desc">Merbau (<em>Instia bijuga</em>) tidak masuk kategori jenis dilindungi, namun pengelolaannya tetap diatur ketat.</div></div></div>
+          <div class="cert-step"><div class="cert-num" style="font-size:11px;width:40px;height:40px;border-radius:6px;">SK</div><div><div class="cert-title">SK MenLHK Penetapan Batas AAC</div><div class="cert-desc">Jatah Tebangan Tahunan (JTT/AAC) ditetapkan berdasarkan potensi tegakan hasil inventarisasi dan dipantau KLHK.</div></div></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-head"><h3>🌐 Standar & Regulasi Internasional</h3></div>
+        <div class="card-body">
+          <div class="cert-step"><div class="cert-num" style="font-size:10px;width:40px;height:40px;border-radius:6px;">FSC</div><div><div class="cert-title">FSC Principles & Criteria v5-2</div><div class="cert-desc">Standar internasional manajemen hutan bertanggung jawab yang berlaku global, termasuk Standar Nasional Indonesia FSC.</div></div></div>
+          <div class="cert-step"><div class="cert-num" style="font-size:10px;width:40px;height:40px;border-radius:6px;">EU</div><div><div class="cert-title">EU Timber Regulation (EUTR) / EUDR</div><div class="cert-desc">Regulasi Uni Eropa yang melarang impor kayu ilegal dan produk turunannya. EUDR 2024 mensyaratkan uji tuntas penuh.</div></div></div>
+          <div class="cert-step"><div class="cert-num" style="font-size:10px;width:40px;height:40px;border-radius:6px;">ILO</div><div><div class="cert-title">Konvensi ILO (111, 138, 169)</div><div class="cert-desc">Standar kerja internasional tentang non-diskriminasi, batas usia kerja, dan hak masyarakat adat yang dirujuk FSC.</div></div></div>
+          <div class="cert-step"><div class="cert-num" style="font-size:10px;width:40px;height:40px;border-radius:6px;">CBD</div><div><div class="cert-title">Convention on Biological Diversity</div><div class="cert-desc">Komitmen Indonesia dalam CBD dan Protokol Nagoya terkait akses sumber daya genetik dan pembagian manfaat.</div></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>📊 Ambang Batas Teknis FSC Merbau</h3></div>
+        <div class="card-body">
+          <div class="prop-row"><span class="prop-label">DBH minimum tebang</span><span class="prop-val">≥ 50 cm</span></div>
+          <div class="prop-row"><span class="prop-label">Buffer riparian minimum</span><span class="prop-val">50 m dari tepi sungai</span></div>
+          <div class="prop-row"><span class="prop-label">Siklus tebang minimum</span><span class="prop-val">40 tahun</span></div>
+          <div class="prop-row"><span class="prop-label">Rasio tanam minimum</span><span class="prop-val">1:20 (tebang:tanam)</span></div>
+          <div class="prop-row"><span class="prop-label">Intensitas tebang maks.</span><span class="prop-val">≤ 8 pohon/ha/tahun</span></div>
+          <div class="prop-row"><span class="prop-label">Buffer lereng curam (>40°)</span><span class="prop-val">Dilarang ditebang</span></div>
+          <div class="prop-row"><span class="prop-label">Pohon induk biji (seed tree)</span><span class="prop-val">≥ 2 pohon/ha dilindungi</span></div>
+          <div class="prop-row"><span class="prop-label">Audit surveilans FSC</span><span class="prop-val">1× per tahun</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ KONTAK ═══════════════════ -->
+<section id="kontak" class="section">
+  <div class="ph"><div class="ph-left"><h2>Kontak & Lembaga Terkait</h2><p>Direktori lembaga pendukung sertifikasi FSC dan pengelolaan merbau</p></div></div>
+  <div class="three-col">
+    <div class="card" style="margin-bottom:0;">
+      <div class="card-head"><h3>🏛️ Pemerintah Indonesia</h3></div>
+      <div class="card-body">
+        <div class="prop-row"><span style="font-size:13px;font-weight:600;">KLHK</span></div>
+        <div style="font-size:12px;color:var(--n500);padding-bottom:8px;">Kementerian Lingkungan Hidup & Kehutanan — Dirjen PHPL</div>
+        <div class="prop-row"><span style="font-size:13px;font-weight:600;">BPKH</span></div>
+        <div style="font-size:12px;color:var(--n500);padding-bottom:8px;">Balai Pemantapan Kawasan Hutan (regional)</div>
+        <div class="prop-row"><span style="font-size:13px;font-weight:600;">BPPHH</span></div>
+        <div style="font-size:12px;color:var(--n500);">Balai Penerapan Pengujian Hasil Hutan</div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:0;">
+      <div class="card-head"><h3>🏅 Badan Sertifikasi</h3></div>
+      <div class="card-body">
+        <div class="prop-row"><span style="font-size:13px;font-weight:600;">SGS Indonesia</span><span><span class="badge bg-green">Terakreditasi</span></span></div>
+        <div class="prop-row"><span style="font-size:13px;font-weight:600;">Bureau Veritas</span><span><span class="badge bg-green">Terakreditasi</span></span></div>
+        <div class="prop-row"><span style="font-size:13px;font-weight:600;">Rainforest Alliance</span><span><span class="badge bg-green">Terakreditasi</span></span></div>
+        <div class="prop-row"><span style="font-size:13px;font-weight:600;">PT. TUV Rheinland</span><span><span class="badge bg-green">Terakreditasi</span></span></div>
+        <div style="margin-top:10px;font-size:12px;color:var(--n500);">* Semua CB diakreditasi oleh ASI (Accreditation Services International), badan pengawas independen FSC.</div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:0;">
+      <div class="card-head"><h3>🌿 Organisasi Pendukung</h3></div>
+      <div class="card-body">
+        <div class="prop-row"><span style="font-size:13px;font-weight:600;">WWF Indonesia</span></div>
+        <div style="font-size:12px;color:var(--n500);padding-bottom:8px;">Pendampingan teknis sertifikasi FSC untuk hutan hujan tropis</div>
+        <div class="prop-row"><span style="font-size:13px;font-weight:600;">TFT (The Forest Trust)</span></div>
+        <div style="font-size:12px;color:var(--n500);padding-bottom:8px;">Penguatan rantai pasok kayu bersertifikat</div>
+        <div class="prop-row"><span style="font-size:13px;font-weight:600;">IAFRI / Fahutan IPB</span></div>
+        <div style="font-size:12px;color:var(--n500);">Riset dan pelatihan teknis kehutanan tropis</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main><!-- end #main -->
+
+<!-- ═══════════════════ MODALS ═══════════════════ -->
+
+<!-- MODAL POHON -->
+<div class="moverlay" id="m-pohon">
+  <div class="modal">
+    <div class="modal-hd"><h3>🌳 Tambah Data Pohon</h3><button class="btn-x" onclick="closeM('m-pohon')">×</button></div>
+    <div class="mbody">
+      <div class="fgrid">
+        <div class="fg"><label>ID Pohon *</label><input type="text" id="p-id" placeholder="MB-2024-001"></div>
+        <div class="fg"><label>Blok / Petak *</label><input type="text" id="p-blok" placeholder="Blok A-1"></div>
+        <div class="fg"><label>DBH (cm) *</label><input type="number" id="p-dbh" placeholder="75" min="10" step="0.1"></div>
+        <div class="fg"><label>Tinggi Total (m)</label><input type="number" id="p-tinggi" placeholder="35" step="0.5"></div>
+        <div class="fg"><label>Kelas Kesehatan</label><select id="p-kelas"><option>A – Sehat</option><option>B – Baik</option><option>C – Sedang</option><option>D – Buruk</option></select></div>
+        <div class="fg"><label>Status *</label><select id="p-status"><option value="layak">Layak Tebang (DBH ≥ 50cm)</option><option value="pemantauan">Pemantauan</option><option value="perlindungan">Perlindungan / HCV</option></select></div>
+        <div class="fg"><label>Lintang (GPS)</label><input type="text" id="p-lat" placeholder="-4.1234"></div>
+        <div class="fg"><label>Bujur (GPS)</label><input type="text" id="p-lon" placeholder="136.5678"></div>
+        <div class="fg"><label>Tanggal Inventarisasi</label><input type="date" id="p-tgl"></div>
+        <div class="fg"><label>Petugas</label><input type="text" id="p-petugas" placeholder="Nama petugas lapangan"></div>
+      </div>
+      <div class="fg"><label>Catatan</label><textarea id="p-cat" placeholder="Kondisi khusus, keberadaan sarang, dll..."></textarea></div>
+    </div>
+    <div class="mfoot"><button class="btn btn-outline" onclick="closeM('m-pohon')">Batal</button><button class="btn btn-primary" onclick="savePohon()">💾 Simpan Pohon</button></div>
+  </div>
+</div>
+
+<!-- MODAL PANEN -->
+<div class="moverlay" id="m-panen">
+  <div class="modal">
+    <div class="modal-hd"><h3>🪵 Catat Kegiatan Panen</h3><button class="btn-x" onclick="closeM('m-panen')">×</button></div>
+    <div class="mbody">
+      <div class="infobox red" style="margin-bottom:1rem;"><h4>⚠️ Periksa sebelum tebang</h4><p>Pastikan pohon memiliki DBH ≥ 50 cm, status "Layak Tebang", dan izin penebangan valid sebelum mencatat kegiatan ini.</p></div>
+      <div class="fgrid">
+        <div class="fg"><label>No. Seri Penebangan *</label><input type="text" id="pn-seri" placeholder="TBG-2024-001"></div>
+        <div class="fg"><label>Tanggal *</label><input type="date" id="pn-tgl"></div>
+        <div class="fg"><label>ID Pohon *</label><input type="text" id="pn-pohon" placeholder="MB-2024-001"></div>
+        <div class="fg"><label>Blok / Petak</label><input type="text" id="pn-blok" placeholder="Blok A-1"></div>
+        <div class="fg"><label>Volume (m³) *</label><input type="number" id="pn-vol" placeholder="4.5" step="0.1" min="0.1"></div>
+        <div class="fg"><label>Operator / Tim</label><input type="text" id="pn-op" placeholder="Tim Panen A"></div>
+        <div class="fg"><label>No. Izin Tebang</label><input type="text" id="pn-izin" placeholder="ITH-2024-XXX"></div>
+        <div class="fg"><label>Teknik Penebangan</label><select id="pn-tek"><option>RIL — Reduced Impact Logging</option><option>Tebang Pilih Indonesia (TPI)</option><option>Konvensional Terpantau</option></select></div>
+      </div>
+      <div class="fg"><label>Catatan Lapangan</label><textarea id="pn-cat" placeholder="Kondisi lahan, cuaca, kendala..."></textarea></div>
+    </div>
+    <div class="mfoot"><button class="btn btn-outline" onclick="closeM('m-panen')">Batal</button><button class="btn btn-primary" onclick="savePanen()">💾 Simpan</button></div>
+  </div>
+</div>
+
+<!-- MODAL PENANAMAN -->
+<div class="moverlay" id="m-tanam">
+  <div class="modal">
+    <div class="modal-hd"><h3>🌱 Catat Kegiatan Penanaman</h3><button class="btn-x" onclick="closeM('m-tanam')">×</button></div>
+    <div class="mbody">
+      <div class="fgrid">
+        <div class="fg"><label>ID Kegiatan *</label><input type="text" id="tn-id" placeholder="TNM-2024-001"></div>
+        <div class="fg"><label>Tanggal *</label><input type="date" id="tn-tgl"></div>
+        <div class="fg"><label>Lokasi / Blok *</label><input type="text" id="tn-lok" placeholder="Blok A-1 areal bekas tebang"></div>
+        <div class="fg"><label>Jumlah Bibit *</label><input type="number" id="tn-jml" placeholder="200" min="1"></div>
+        <div class="fg"><label>Sumber Benih</label><input type="text" id="tn-src" placeholder="BPTH Papua / sertifikasi"></div>
+        <div class="fg"><label>Penanggung Jawab</label><input type="text" id="tn-pj" placeholder="Nama koordinator"></div>
+        <div class="fg"><label>% Hidup Awal</label><input type="number" id="tn-hidup" value="100" min="0" max="100"></div>
+        <div class="fg"><label>Referensi Panen (opsional)</label><input type="text" id="tn-ref" placeholder="TBG-2024-001"></div>
+      </div>
+      <div class="fg"><label>Catatan</label><textarea id="tn-cat" placeholder="Kondisi lahan, metode, kendala..."></textarea></div>
+    </div>
+    <div class="mfoot"><button class="btn btn-outline" onclick="closeM('m-tanam')">Batal</button><button class="btn btn-primary" onclick="saveTanam()">💾 Simpan</button></div>
+  </div>
+</div>
+
+<!-- MODAL PATROLI -->
+<div class="moverlay" id="m-patroli">
+  <div class="modal">
+    <div class="modal-hd"><h3>🛡️ Catat Kegiatan Patroli</h3><button class="btn-x" onclick="closeM('m-patroli')">×</button></div>
+    <div class="mbody">
+      <div class="fgrid">
+        <div class="fg"><label>ID Patroli *</label><input type="text" id="pt-id" placeholder="PAT-2024-001"></div>
+        <div class="fg"><label>Tanggal *</label><input type="date" id="pt-tgl"></div>
+        <div class="fg"><label>Rute / Blok *</label><input type="text" id="pt-rute" placeholder="Blok A – Batas Utara"></div>
+        <div class="fg"><label>Tim / Petugas</label><input type="text" id="pt-tim" placeholder="Tim Polhut 1"></div>
+        <div class="fg"><label>Durasi (jam)</label><input type="number" id="pt-dur" placeholder="6" min="0.5" step="0.5"></div>
+        <div class="fg"><label>Temuan</label><select id="pt-tmn"><option value="aman">Aman — Tidak ada temuan</option><option value="ilegal">Penebangan Liar</option><option value="perambahan">Perambahan Lahan</option><option value="kebakaran">Potensi Kebakaran</option><option value="satwa">Aktivitas Satwa Liar</option><option value="lain">Temuan Lain</option></select></div>
+      </div>
+      <div class="fg"><label>Keterangan Temuan</label><textarea id="pt-ket" placeholder="Jelaskan temuan, koordinat, tindakan yang diambil..."></textarea></div>
+    </div>
+    <div class="mfoot"><button class="btn btn-outline" onclick="closeM('m-patroli')">Batal</button><button class="btn btn-primary" onclick="savePatroli()">💾 Simpan</button></div>
+  </div>
+</div>
+
+<!-- MODAL CoC -->
+<div class="moverlay" id="m-coc">
+  <div class="modal">
+    <div class="modal-hd"><h3>🔗 Tambah Dokumen Chain of Custody</h3><button class="btn-x" onclick="closeM('m-coc')">×</button></div>
+    <div class="mbody">
+      <div class="fgrid">
+        <div class="fg"><label>No. Dokumen *</label><input type="text" id="cc-no" placeholder="CoC-2024-001"></div>
+        <div class="fg"><label>Tanggal *</label><input type="date" id="cc-tgl"></div>
+        <div class="fg"><label>Asal / Pengirim *</label><input type="text" id="cc-asal" placeholder="TPK Hutan Blok A"></div>
+        <div class="fg"><label>Tujuan / Penerima *</label><input type="text" id="cc-tujuan" placeholder="Pabrik Pengolahan Sorong"></div>
+        <div class="fg"><label>Volume (m³) *</label><input type="number" id="cc-vol" placeholder="15.5" step="0.1"></div>
+        <div class="fg"><label>Ref. No. Panen</label><input type="text" id="cc-ref" placeholder="TBG-2024-001"></div>
+        <div class="fg"><label>Jenis Produk</label><input type="text" id="cc-prod" placeholder="Kayu bulat / gergajian / parket"></div>
+        <div class="fg"><label>Tujuan Akhir</label><select id="cc-dest"><option>Pasar Domestik</option><option>Ekspor — Eropa</option><option>Ekspor — Amerika Utara</option><option>Ekspor — Asia</option><option>Ekspor — Lainnya</option></select></div>
+      </div>
+    </div>
+    <div class="mfoot"><button class="btn btn-outline" onclick="closeM('m-coc')">Batal</button><button class="btn btn-primary" onclick="saveCoC()">💾 Simpan</button></div>
+  </div>
+</div>
+
+<!-- MODAL DOKUMEN -->
+<div class="moverlay" id="m-dokumen">
+  <div class="modal">
+    <div class="modal-hd"><h3>📁 Tambah Dokumen / Izin</h3><button class="btn-x" onclick="closeM('m-dokumen')">×</button></div>
+    <div class="mbody">
+      <div class="fgrid">
+        <div class="fg"><label>Nama Dokumen *</label><input type="text" id="dk-nama" placeholder="SK IUPHHK-HA"></div>
+        <div class="fg"><label>Jenis</label><select id="dk-jenis"><option>Legalitas Utama</option><option>Lingkungan</option><option>Sosial</option><option>Teknis</option><option>Ekspor</option><option>Lainnya</option></select></div>
+        <div class="fg"><label>No. Dokumen</label><input type="text" id="dk-no" placeholder="SK.123/MenLHK/2024"></div>
+        <div class="fg"><label>Penerbit</label><input type="text" id="dk-penerbit" placeholder="KLHK / BPKH / dll."></div>
+        <div class="fg"><label>Tanggal Terbit</label><input type="date" id="dk-terbit"></div>
+        <div class="fg"><label>Berlaku Hingga</label><input type="date" id="dk-exp"></div>
+      </div>
+    </div>
+    <div class="mfoot"><button class="btn btn-outline" onclick="closeM('m-dokumen')">Batal</button><button class="btn btn-primary" onclick="saveDok()">💾 Simpan</button></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+// ════ STATE ════
+const S = {
+  pohon:[], panen:[], tanam:[], patroli:[], coc:[], dok:[],
+  fsc:{}, activePTab:0,
+  notes: localStorage.getItem('simerbau_notes')||''
+};
+
+// ════ FSC DATA ════
+const FSC_P = [
+  { label:'P1: Hukum', color:'#2d6b2b', kriteria:[
+    {id:'1A', judul:'Izin pengelolaan hutan diperoleh secara sah (IUPHHK-HA/HK)', ket:'SK Menteri LHK tersedia, masih berlaku, dan dipajang di kantor'},
+    {id:'1B', judul:'Pembayaran PNBP, DR, dan PSDH terkini dan terdokumentasi', ket:'Bukti transfer bank dan kuitansi resmi tersedia untuk 2 tahun terakhir'},
+  ]},
+  { label:'P2: Pekerja', color:'#0d6b56', kriteria:[
+    {id:'2A', judul:'Upah minimum dan kondisi kerja memenuhi ketentuan hukum', ket:'Kontrak kerja, slip gaji, dan bukti BPJS Ketenagakerjaan & Kesehatan tersedia'},
+    {id:'2B', judul:'APD lengkap tersedia dan pelatihan K3 terdokumentasi', ket:'Daftar distribusi APD, sertifikat pelatihan K3, catatan kecelakaan kerja'},
+  ]},
+  { label:'P3: Masy. Adat', color:'#185fa5', kriteria:[
+    {id:'3A', judul:'Pemetaan wilayah adat dan proses FPIC terdokumentasi', ket:'Peta wilayah adat, notulensi konsultasi, dokumen persetujuan tertulis'},
+    {id:'3B', judul:'Mekanisme penyelesaian konflik terbentuk dan aktif', ket:'SOP keluhan, rekam jejak pengaduan, bukti penyelesaian kasus'},
+  ]},
+  { label:'P4: Masyarakat', color:'#7a4510', kriteria:[
+    {id:'4A', judul:'Program pemberdayaan masyarakat lokal berjalan', ket:'Laporan CSR, pelatihan keterampilan, infrastruktur yang dibangun'},
+  ]},
+  { label:'P5: Manfaat', color:'#6b2fa0', kriteria:[
+    {id:'5A', judul:'RKU 10 tahun dan RKT tahunan disetujui KLHK', ket:'Dokumen RKU dan RKT terbaru tersedia dan sesuai dengan kegiatan aktual'},
+    {id:'5B', judul:'Sistem inventarisasi tegakan merbau periodik tersedia', ket:'LHTI terkini, peta sebaran pohon, data potensi dan AAC dihitung benar'},
+  ]},
+  { label:'P6: Lingkungan', color:'#9b2020', kriteria:[
+    {id:'6A', judul:'AMDAL / UKL-UPL tersedia dan laporan RKL-RPL semesteran', ket:'Dokumen AMDAL disetujui, laporan pelaksanaan RKL-RPL terkini'},
+    {id:'6B', judul:'Penerapan RIL (Reduced Impact Logging) terdokumentasi', ket:'SOP RIL, pelatihan operator, foto/video kegiatan RIL, monitoring dampak'},
+    {id:'6C', judul:'Peta dan perlindungan riparian, lereng curam, & HCV aktif', ket:'Peta kawasan lindung, papan larangan di lapangan, monitoring berkala'},
+  ]},
+  { label:'P7: RPH', color:'#1a4f99', kriteria:[
+    {id:'7A', judul:'Dokumen Rencana Pengelolaan Hutan (RPH) komprehensif', ket:'RPH mencakup aspek ekologi, sosial, ekonomi; diperbarui setiap 5 tahun'},
+    {id:'7B', judul:'Sistem monitoring dan evaluasi tahunan berjalan', ket:'Laporan monitoring tahunan, indikator kinerja terukur, tindak lanjut temuan'},
+  ]},
+  { label:'P8: Monitoring', color:'#0d5c5c', kriteria:[
+    {id:'8A', judul:'Pemantauan biodiversitas dan spesies dilindungi berkala', ket:'Daftar spesies ditemukan, catatan satwa liar, kolaborasi dengan peneliti'},
+    {id:'8B', judul:'Pemantauan laju panen, regenerasi, dan pemulihan tegakan', ket:'Data AAC vs realisasi, pengukuran permudaan alam di petak ukur permanen'},
+  ]},
+  { label:'P9: HCV', color:'#5a3e00', kriteria:[
+    {id:'9A', judul:'Penilaian HCV oleh konsultan terakreditasi tersedia', ket:'Laporan HCV, peta HCV area, rencana pengelolaan dan pemantauan HCV'},
+    {id:'9B', judul:'Tidak ada konversi hutan alam dan komitmen tertulis', ket:'Citra satelit historis, pernyataan komitmen direksi, verifikasi lapangan'},
+  ]},
+  { label:'P10: CoC', color:'#2d3a6b', kriteria:[
+    {id:'10A', judul:'Sistem Chain of Custody penuh dari tunggul ke produk akhir', ket:'Semua titik perpindahan terdokumentasi, label FSC dipasang pada produk'},
+  ]},
+];
+
+// ════ INIT ════
+window.addEventListener('DOMContentLoaded', ()=>{
+  const d = new Date();
+  document.getElementById('topbar-date').textContent = d.toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const tStr = d.toISOString().split('T')[0];
+  ['p-tgl','pn-tgl','tn-tgl','pt-tgl','cc-tgl','dk-terbit'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value=tStr;
+  });
+  const saved = localStorage.getItem('simerbau_fsc');
+  if(saved) S.fsc = JSON.parse(saved);
+  if(S.notes) { const n=document.getElementById('audit-notes'); if(n) n.value=S.notes; }
+  renderFSCTabs();
+  renderFSCContent(0);
+  updateDashboard();
+  initCalc();
+});
+
+// ════ NAVIGATION ════
+function go(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.side-item').forEach(b=>b.classList.remove('active'));
+  const sec = document.getElementById(id);
+  if(sec) sec.classList.add('active');
+  // find matching nav button
+  document.querySelectorAll('.side-item').forEach(b=>{
+    if(b.getAttribute('onclick')===`go('${id}')`) b.classList.add('active');
+  });
+  if(id==='laporan') updateReport();
+  if(id==='penanaman') updateRasio();
+  window.scrollTo(0,0);
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+// ════ MODAL ════
+function openM(id){ document.getElementById(id).classList.add('open'); }
+function closeM(id){ document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.moverlay').forEach(o=>{
+  o.addEventListener('click',e=>{ if(e.target===o) o.classList.remove('open'); });
+});
+
+// ════ TOAST ════
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ════ LOG ════
+function addLog(msg){
+  const d=new Date(), time=d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+  const c=document.getElementById('ds-log');
+  const i=document.createElement('div'); i.className='tl-item';
+  i.innerHTML=`<div class="tl-dot done">✓</div><div class="tl-date">${time}</div><div class="tl-title">${msg}</div>`;
+  c.insertBefore(i,c.firstChild);
+  while(c.children.length>10) c.removeChild(c.lastChild);
+}
+
+// ════ SAVE POHON ════
+function savePohon(){
+  const id=v('p-id'), blok=v('p-blok'), dbh=parseFloat(v('p-dbh'));
+  if(!id||!blok||!dbh){ toast('⚠️ ID, Blok, dan DBH wajib diisi!'); return; }
+  const t=parseFloat(v('p-tinggi'))||0;
+  const vol = t ? +((Math.PI/4)*Math.pow(dbh/100,2)*t*0.7).toFixed(2) : 0;
+  S.pohon.push({id,blok,dbh,tinggi:t,vol,kelas:v('p-kelas'),status:v('p-status'),lat:v('p-lat'),lon:v('p-lon'),tgl:v('p-tgl'),petugas:v('p-petugas'),cat:v('p-cat')});
+  renderPohon(); updateDashboard();
+  addLog(`Pohon ${id} (DBH ${dbh}cm, ${v('p-status')}) — Blok ${blok}`);
+  closeM('m-pohon'); clearFields(['p-id','p-blok','p-dbh','p-tinggi','p-lat','p-lon','p-petugas','p-cat']);
+  toast('✅ Pohon berhasil disimpan');
+}
+
+function renderPohon(arr){
+  const list=arr||S.pohon, t=document.getElementById('tb-pohon');
+  if(!list.length){ t.innerHTML='<tr><td colspan="10"><div class="empty-st"><div class="ei">🌿</div><p>Belum ada data pohon.</p></div></td></tr>'; return; }
+  t.innerHTML=list.map((p,i)=>`<tr>
+    <td><strong>${p.id}</strong></td><td>${p.blok}</td>
+    <td>${p.dbh} cm ${p.dbh>=50?'<span class="badge bg-green">✓</span>':'<span class="badge bg-red">⚠</span>'}</td>
+    <td>${p.tinggi||'—'}</td><td>${p.vol||'—'}</td>
+    <td>${p.kelas||'—'}</td>
+    <td style="font-size:11px;">${p.lat&&p.lon?p.lat+','+p.lon:'—'}</td>
+    <td>${stBadge(p.status)}</td><td>${p.tgl||'—'}</td>
+    <td><button class="btn btn-danger btn-xs" onclick="delPohon(${i})">✕</button></td>
+  </tr>`).join('');
+}
+
+function delPohon(i){ if(confirm('Hapus data pohon ini?')){ S.pohon.splice(i,1); renderPohon(); updateDashboard(); }}
+function filterInv(){
+  const q=v('srch-pohon').toLowerCase(), s=v('flt-status');
+  renderPohon(S.pohon.filter(p=>(!q||p.id.toLowerCase().includes(q)||p.blok.toLowerCase().includes(q))&&(!s||p.status===s)));
+}
+
+// ════ SAVE PANEN ════
+function savePanen(){
+  const seri=v('pn-seri'), vol=parseFloat(v('pn-vol'));
+  if(!seri||!vol){ toast('⚠️ No. Seri dan Volume wajib!'); return; }
+  S.panen.push({seri,vol,tgl:v('pn-tgl'),pohon:v('pn-pohon'),blok:v('pn-blok'),op:v('pn-op'),izin:v('pn-izin'),tek:v('pn-tek'),cat:v('pn-cat')});
+  // update pohon status
+  const ph=S.pohon.find(p=>p.id===v('pn-pohon'));
+  if(ph) ph.status='ditebang';
+  renderPohon(); renderPanen(); updateDashboard(); updateRasio();
+  addLog(`Panen ${seri}: ${vol} m³ dari pohon ${v('pn-pohon')}`);
+  closeM('m-panen'); clearFields(['pn-seri','pn-pohon','pn-blok','pn-op','pn-izin','pn-cat','pn-vol']);
+  toast('✅ Catatan panen disimpan');
+}
+
+function renderPanen(){
+  const t=document.getElementById('tb-panen');
+  if(!S.panen.length){ t.innerHTML='<tr><td colspan="10"><div class="empty-st"><div class="ei">🪵</div><p>Belum ada catatan panen.</p></div></td></tr>'; return; }
+  t.innerHTML=S.panen.map((p,i)=>`<tr>
+    <td><strong>${p.seri}</strong></td><td>${p.tgl||'—'}</td><td>${p.pohon||'—'}</td><td>${p.blok||'—'}</td>
+    <td><strong>${p.vol}</strong></td><td style="font-size:12px;">${p.tek||'—'}</td><td>${p.op||'—'}</td>
+    <td>${p.izin?`<span class="badge bg-green">${p.izin}</span>`:'<span class="badge bg-red">Tidak ada</span>'}</td>
+    <td><span class="badge bg-green">Terkonfirmasi</span></td>
+    <td><button class="btn btn-danger btn-xs" onclick="delPanen(${i})">✕</button></td>
+  </tr>`).join('');
+}
+function delPanen(i){ if(confirm('Hapus?')){ S.panen.splice(i,1); renderPanen(); updateDashboard(); }}
+
+// ════ SAVE TANAM ════
+function saveTanam(){
+  const id=v('tn-id'), jml=parseInt(v('tn-jml'));
+  if(!id||!jml){ toast('⚠️ ID dan Jumlah Bibit wajib!'); return; }
+  S.tanam.push({id,jml,tgl:v('tn-tgl'),lok:v('tn-lok'),src:v('tn-src'),pj:v('tn-pj'),hidup:parseInt(v('tn-hidup'))||100,ref:v('tn-ref'),cat:v('tn-cat')});
+  renderTanam(); updateDashboard(); updateRasio();
+  addLog(`Penanaman ${id}: ${jml} bibit di ${v('tn-lok')}`);
+  closeM('m-tanam'); clearFields(['tn-id','tn-lok','tn-src','tn-pj','tn-ref','tn-cat','tn-jml']);
+  toast('✅ Catatan penanaman disimpan');
+}
+
+function renderTanam(){
+  const t=document.getElementById('tb-tanam');
+  if(!S.tanam.length){ t.innerHTML='<tr><td colspan="9"><div class="empty-st"><div class="ei">🌱</div><p>Belum ada catatan penanaman.</p></div></td></tr>'; return; }
+  t.innerHTML=S.tanam.map((p,i)=>`<tr>
+    <td><strong>${p.id}</strong></td><td>${p.tgl||'—'}</td><td>${p.lok||'—'}</td>
+    <td><strong>${p.jml}</strong></td><td>${p.src||'—'}</td><td>${p.pj||'—'}</td>
+    <td>${p.hidup}%</td><td><span class="badge bg-green">Aktif</span></td>
+    <td><button class="btn btn-danger btn-xs" onclick="delTanam(${i})">✕</button></td>
+  </tr>`).join('');
+}
+function delTanam(i){ if(confirm('Hapus?')){ S.tanam.splice(i,1); renderTanam(); updateDashboard(); }}
+
+function updateRasio(){
+  const tebang=S.panen.length, tanam=S.tanam.reduce((a,b)=>a+b.jml,0);
+  const rasio=tebang>0?Math.round(tanam/tebang):0;
+  const warna=rasio>=20?'#2d6b2b':rasio>=10?'#c47828':'#e05555';
+  const status=rasio>=20?'✅ Memenuhi standar FSC (≥1:20)':rasio>=10?'⚠️ Belum memenuhi standar FSC':'❌ Jauh di bawah standar FSC';
+  document.getElementById('rasio-panel').innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:1rem;">
+      <div style="background:var(--n100);border-radius:8px;padding:12px;text-align:center;">
+        <div style="font-size:11px;color:var(--n500);font-weight:700;text-transform:uppercase;margin-bottom:4px;">Pohon Ditebang</div>
+        <div style="font-size:28px;font-weight:700;color:#9b2020;">${tebang}</div>
+      </div>
+      <div style="background:var(--n100);border-radius:8px;padding:12px;text-align:center;">
+        <div style="font-size:11px;color:var(--n500);font-weight:700;text-transform:uppercase;margin-bottom:4px;">Bibit Ditanam</div>
+        <div style="font-size:28px;font-weight:700;color:#245522;">${tanam}</div>
+      </div>
+      <div style="background:var(--n100);border-radius:8px;padding:12px;text-align:center;">
+        <div style="font-size:11px;color:var(--n500);font-weight:700;text-transform:uppercase;margin-bottom:4px;">Rasio Aktual</div>
+        <div style="font-size:28px;font-weight:700;color:${warna};">1:${rasio}</div>
+      </div>
+    </div>
+    <div class="pbar" style="height:14px;border-radius:7px;"><div class="pfill" style="width:${Math.min(100,rasio/20*100)}%;height:14px;border-radius:7px;background:${warna};"></div></div>
+    <div style="text-align:center;margin-top:8px;font-size:13px;font-weight:600;color:${warna};">${status}</div>
+    <div style="text-align:center;font-size:12px;color:var(--n500);margin-top:4px;">Standar FSC: minimum 1 tebang : 20 tanam untuk <em>Instia bijuga</em></div>
+  `;
+}
+
+// ════ SAVE PATROLI ════
+function savePatroli(){
+  const id=v('pt-id');
+  if(!id){ toast('⚠️ ID Patroli wajib!'); return; }
+  S.patroli.push({id,tgl:v('pt-tgl'),rute:v('pt-rute'),tim:v('pt-tim'),dur:v('pt-dur'),tmn:v('pt-tmn'),ket:v('pt-ket')});
+  renderPatroli(); updateDashboard();
+  addLog(`Patroli ${id}: ${v('pt-tmn')} di ${v('pt-rute')}`);
+  closeM('m-patroli'); clearFields(['pt-id','pt-rute','pt-tim','pt-dur','pt-ket']);
+  toast('✅ Catatan patroli disimpan');
+}
+
+function renderPatroli(){
+  const t=document.getElementById('tb-patroli');
+  if(!S.patroli.length){ t.innerHTML='<tr><td colspan="8"><div class="empty-st"><div class="ei">🛡️</div><p>Belum ada catatan patroli.</p></div></td></tr>'; return; }
+  t.innerHTML=S.patroli.map((p,i)=>{
+    const tmnBadge={aman:'bg-green',ilegal:'bg-red',perambahan:'bg-red',kebakaran:'bg-red',satwa:'bg-blue',lain:'bg-gold'}[p.tmn]||'bg-gray';
+    return `<tr>
+      <td><strong>${p.id}</strong></td><td>${p.tgl||'—'}</td><td>${p.rute||'—'}</td><td>${p.tim||'—'}</td>
+      <td>${p.dur||'—'}</td><td><span class="badge ${tmnBadge}">${p.tmn}</span></td>
+      <td>${p.tmn==='aman'?'<span class="badge bg-green">Selesai</span>':'<span class="badge bg-gold">Tindak Lanjut</span>'}</td>
+      <td><button class="btn btn-danger btn-xs" onclick="delPatroli(${i})">✕</button></td>
+    </tr>`;
+  }).join('');
+}
+function delPatroli(i){ if(confirm('Hapus?')){ S.patroli.splice(i,1); renderPatroli(); updateDashboard(); }}
+
+// ════ SAVE CoC ════
+function saveCoC(){
+  const no=v('cc-no'); if(!no){ toast('⚠️ No. Dokumen wajib!'); return; }
+  S.coc.push({no,tgl:v('cc-tgl'),asal:v('cc-asal'),tujuan:v('cc-tujuan'),vol:v('cc-vol'),ref:v('cc-ref'),prod:v('cc-prod'),dest:v('cc-dest')});
+  renderCoC();
+  addLog(`CoC ${no}: ${v('cc-asal')} → ${v('cc-tujuan')}`);
+  closeM('m-coc'); clearFields(['cc-no','cc-asal','cc-tujuan','cc-vol','cc-ref','cc-prod']);
+  toast('✅ Dokumen CoC disimpan');
+}
+function renderCoC(){
+  const t=document.getElementById('tb-coc');
+  if(!S.coc.length){ t.innerHTML='<tr><td colspan="7"><div class="empty-st"><div class="ei">🔗</div><p>Belum ada dokumen CoC.</p></div></td></tr>'; return; }
+  t.innerHTML=S.coc.map((c,i)=>`<tr>
+    <td><strong>${c.no}</strong></td><td>${c.tgl||'—'}</td><td>${c.asal||'—'}</td><td>${c.tujuan||'—'}</td>
+    <td>${c.vol||'—'} m³</td><td><span class="badge bg-green">Terverifikasi</span></td>
+    <td><button class="btn btn-danger btn-xs" onclick="delCoC(${i})">✕</button></td>
+  </tr>`).join('');
+}
+function delCoC(i){ if(confirm('Hapus?')){ S.coc.splice(i,1); renderCoC(); }}
+
+// ════ SAVE DOKUMEN ════
+function saveDok(){
+  const nama=v('dk-nama'); if(!nama){ toast('⚠️ Nama dokumen wajib!'); return; }
+  const exp=v('dk-exp'), today=new Date().toISOString().split('T')[0];
+  const status=!exp?'aktif':(exp>today?'aktif':'kadaluarsa');
+  S.dok.push({nama,jenis:v('dk-jenis'),no:v('dk-no'),penerbit:v('dk-penerbit'),terbit:v('dk-terbit'),exp,status});
+  renderDok();
+  closeM('m-dokumen'); clearFields(['dk-nama','dk-no','dk-penerbit','dk-terbit','dk-exp']);
+  toast('✅ Dokumen disimpan');
+}
+function renderDok(){
+  const t=document.getElementById('tb-dok');
+  if(!S.dok.length){ t.innerHTML='<tr><td colspan="7"><div class="empty-st"><div class="ei">📁</div><p>Tambahkan dokumen perizinan Anda.</p></div></td></tr>'; return; }
+  t.innerHTML=S.dok.map((d,i)=>`<tr>
+    <td><strong>${d.nama}</strong></td>
+    <td><span class="badge bg-blue">${d.jenis}</span></td>
+    <td>${d.no||'—'}</td><td>${d.terbit||'—'}</td><td>${d.exp||'Tidak terbatas'}</td>
+    <td>${d.status==='aktif'?'<span class="badge bg-green">Aktif</span>':'<span class="badge bg-red">Kadaluarsa</span>'}</td>
+    <td><button class="btn btn-danger btn-xs" onclick="delDok(${i})">✕</button></td>
+  </tr>`).join('');
+}
+function delDok(i){ if(confirm('Hapus?')){ S.dok.splice(i,1); renderDok(); }}
+
+// ════ FSC CHECKLIST ════
+function renderFSCTabs(){
+  const row=document.getElementById('ptabs');
+  row.innerHTML=FSC_P.map((p,i)=>
+    `<button class="ptab${i===S.activePTab?' active':''}" onclick="renderFSCContent(${i})">${p.label}</button>`
+  ).join('');
+}
+
+function renderFSCContent(idx){
+  S.activePTab=idx;
+  renderFSCTabs();
+  const p=FSC_P[idx];
+  const html=p.kriteria.map(k=>{
+    const on=S.fsc[k.id]||false;
+    return `<div class="ck-item">
+      <div class="ck-box ${on?'on':''}" onclick="toggleFSC('${k.id}')">${on?'✓':''}</div>
+      <div style="flex:1;">
+        <div class="ck-title" style="${on?'text-decoration:line-through;color:var(--n400)':''}">${k.judul}</div>
+        <div class="ck-desc">${k.ket}</div>
+      </div>
+      <span class="ck-tag">${k.id}</span>
+    </div>`;
+  }).join('');
+  document.getElementById('ck-content').innerHTML=html;
+  updateFSCStats();
+}
+
+function toggleFSC(id){
+  S.fsc[id]=!S.fsc[id];
+  localStorage.setItem('simerbau_fsc',JSON.stringify(S.fsc));
+  renderFSCContent(S.activePTab);
+  updateDashboard();
+}
+
+function resetFSC(){
+  if(confirm('Reset semua? Progress centang akan dihapus.')){ S.fsc={}; localStorage.removeItem('simerbau_fsc'); renderFSCContent(S.activePTab); updateDashboard(); }}
+
+function updateFSCStats(){
+  const allK=FSC_P.flatMap(p=>p.kriteria);
+  const done=allK.filter(k=>S.fsc[k.id]).length, total=allK.length;
+  document.getElementById('ck-done').textContent=done;
+  document.getElementById('ck-rem').textContent=total-done;
+  document.getElementById('ck-pct').textContent=Math.round(done/total*100)+'%';
+}
+
+// ════ DASHBOARD ════
+function updateDashboard(){
+  document.getElementById('ds-pohon').textContent=S.pohon.length;
+  const vol=S.panen.reduce((a,b)=>a+parseFloat(b.vol||0),0);
+  document.getElementById('ds-vol').textContent=vol.toFixed(1)+' m³';
+  document.getElementById('ds-tanam').textContent=S.tanam.reduce((a,b)=>a+b.jml,0);
+  document.getElementById('ds-patroli').textContent=S.patroli.length;
+  const allK=FSC_P.flatMap(p=>p.kriteria);
+  const done=allK.filter(k=>S.fsc[k.id]).length, total=allK.length;
+  const pct=Math.round(done/total*100);
+  document.getElementById('ds-fsc').textContent=pct+'%';
+  document.getElementById('ds-fsc-sub').textContent=`${done}/${total} kriteria`;
+  // FSC bars
+  const bars=FSC_P.map(p=>{
+    const d=p.kriteria.filter(k=>S.fsc[k.id]).length, n=p.kriteria.length;
+    const pp=Math.round(d/n*100);
+    return `<div style="margin-bottom:9px;">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;">
+        <span style="color:var(--n600);">${p.label.split(':')[1].trim()}</span>
+        <span style="font-weight:700;">${d}/${n}</span>
+      </div>
+      <div class="pbar"><div class="pfill" style="width:${pp}%;background:${p.color};"></div></div>
+    </div>`;
+  }).join('');
+  document.getElementById('ds-fsc-bars').innerHTML=bars;
+  // alerts
+  const alerts=[];
+  S.pohon.filter(p=>p.dbh<50&&p.status==='layak').forEach(()=>alerts.push({cls:'gold',msg:'⚠️ Ada pohon bertanda "Layak Tebang" dengan DBH < 50 cm — tidak sesuai standar FSC'}));
+  S.panen.filter(p=>!p.izin).forEach(()=>alerts.push({cls:'red',msg:'⛔ Ada catatan panen tanpa nomor izin tebang — risiko non-konformitas FSC'}));
+  if(S.panen.length>0){
+    const tanam=S.tanam.reduce((a,b)=>a+b.jml,0), rasio=tanam/S.panen.length;
+    if(rasio<20) alerts.push({cls:'red',msg:`🌱 Rasio tanam:tebang saat ini 1:${Math.round(rasio)} — di bawah standar FSC (1:20)`});
+  }
+  const al=document.getElementById('ds-alerts');
+  if(!alerts.length){ al.innerHTML='<div class="infobox"><h4>✅ Tidak ada peringatan aktif</h4><p>Semua indikator yang terpantau dalam kondisi baik.</p></div>'; }
+  else{ al.innerHTML=alerts.map(a=>`<div class="infobox ${a.cls}"><p>${a.msg}</p></div>`).join(''); }
+}
+
+// ════ REPORT ════
+function updateReport(){
+  const d=new Date();
+  document.getElementById('rpt-tgl').textContent=d.toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  // produksi
+  const vol=S.panen.reduce((a,b)=>a+parseFloat(b.vol||0),0);
+  document.getElementById('rpt-prod').innerHTML=S.panen.length?
+    `<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+      <div style="background:var(--n100);border-radius:8px;padding:12px;text-align:center;"><div class="stat-label">Total Volume</div><div style="font-size:24px;font-weight:700;">${vol.toFixed(2)} m³</div></div>
+      <div style="background:var(--n100);border-radius:8px;padding:12px;text-align:center;"><div class="stat-label">Jumlah Panen</div><div style="font-size:24px;font-weight:700;">${S.panen.length}</div></div>
+    </div>
+    ${S.panen.map(p=>`<div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--n100);"><span>${p.seri}</span><span>${p.tgl||'—'}</span><span><strong>${p.vol} m³</strong></span></div>`).join('')}`:
+    '<p style="color:var(--n500);font-size:13px;">Belum ada data produksi.</p>';
+  // inventaris
+  const sc={layak:0,pemantauan:0,perlindungan:0,ditebang:0};
+  S.pohon.forEach(p=>sc[p.status]=(sc[p.status]||0)+1);
+  document.getElementById('rpt-inv').innerHTML=S.pohon.length?
+    `<div style="font-size:13px;">
+      <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--n100);"><span>Total pohon tercatat</span><strong>${S.pohon.length}</strong></div>
+      <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--n100);"><span>Layak tebang (DBH ≥50 cm)</span><strong>${sc.layak||0}</strong></div>
+      <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--n100);"><span>Pemantauan</span><strong>${sc.pemantauan||0}</strong></div>
+      <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--n100);"><span>Kawasan perlindungan</span><strong>${sc.perlindungan||0}</strong></div>
+      <div style="display:flex;justify-content:space-between;padding:5px 0;"><span>Sudah ditebang</span><strong>${sc.ditebang||0}</strong></div>
+    </div>`:
+    '<p style="color:var(--n500);font-size:13px;">Belum ada data inventaris.</p>';
+  // tanam
+  const jmlTanam=S.tanam.reduce((a,b)=>a+b.jml,0);
+  document.getElementById('rpt-tanam').innerHTML=S.tanam.length?
+    `<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div style="background:var(--n100);border-radius:8px;padding:12px;text-align:center;"><div class="stat-label">Kegiatan</div><div style="font-size:24px;font-weight:700;">${S.tanam.length}</div></div>
+      <div style="background:var(--n100);border-radius:8px;padding:12px;text-align:center;"><div class="stat-label">Total Bibit</div><div style="font-size:24px;font-weight:700;">${jmlTanam}</div></div>
+    </div>`:
+    '<p style="color:var(--n500);font-size:13px;">Belum ada data penanaman.</p>';
+  // FSC
+  const allK=FSC_P.flatMap(p=>p.kriteria), done=allK.filter(k=>S.fsc[k.id]).length, total=allK.length, pct=Math.round(done/total*100);
+  const warna=pct>=80?'#2d6b2b':pct>=50?'#c47828':'#e05555';
+  document.getElementById('rpt-fsc').innerHTML=`
+    <div style="text-align:center;margin-bottom:1rem;">
+      <div style="font-size:44px;font-weight:700;color:${warna};">${pct}%</div>
+      <div style="font-size:13px;color:var(--n500);">${done} dari ${total} kriteria terpenuhi</div>
+    </div>
+    <div class="pbar" style="height:14px;border-radius:7px;"><div class="pfill" style="width:${pct}%;height:14px;border-radius:7px;background:${warna};"></div></div>
+    <div style="margin-top:10px;text-align:center;font-size:13px;font-weight:700;color:${warna};">
+      ${pct>=80?'✅ Siap untuk Audit FSC':pct>=50?'⏳ Dalam Proses Sertifikasi':'❌ Perlu Tindakan Segera'}
+    </div>`;
+}
+
+function saveNotes(){
+  const n=document.getElementById('audit-notes').value;
+  localStorage.setItem('simerbau_notes',n); S.notes=n;
+  toast('💾 Catatan auditor tersimpan');
+}
+
+// ════ CALCULATORS ════
+function initCalc(){ hitungVol(); hitungNilai(); hitungBibit(); }
+
+function hitungVol(){
+  const dbh=parseFloat(document.getElementById('kc-dbh').value)||0;
+  const t=parseFloat(document.getElementById('kc-t').value)||0;
+  const ff=parseFloat(document.getElementById('kc-ff').value)||0.7;
+  if(!dbh||!t){ document.getElementById('kc-hasil').textContent='—'; return; }
+  const vol=((Math.PI/4)*Math.pow(dbh/100,2)*t*ff);
+  document.getElementById('kc-hasil').textContent=vol.toFixed(3)+' m³';
+  document.getElementById('kc-rumus').textContent=`¼π × (${dbh}/100)² × ${t} × ${ff} = ${vol.toFixed(3)} m³`;
+}
+
+function hitungNilai(){
+  const vol=parseFloat(document.getElementById('kn-vol').value)||0;
+  const harga=parseFloat(document.getElementById('kn-mutu').value)||0;
+  const prem=parseFloat(document.getElementById('kn-prem').value)||0;
+  const base=vol*harga, total=base*(1+prem/100);
+  document.getElementById('kn-hasil').textContent=total>0?'Rp '+Math.round(total).toLocaleString('id-ID'):'—';
+  document.getElementById('kn-detail').textContent=vol>0?`Base Rp ${Math.round(base).toLocaleString('id-ID')} + Premium FSC ${prem}%`:'masukkan volume terlebih dahulu';
+}
+
+function hitungBibit(){
+  const luas=parseFloat(document.getElementById('kb-luas').value)||0;
+  const pola=parseFloat(document.getElementById('kb-pola').value)||0;
+  const sulam=parseFloat(document.getElementById('kb-sulam').value)||0;
+  const base=Math.round(luas*pola);
+  const total=Math.round(base*(1+sulam/100));
+  document.getElementById('kb-hasil').textContent=total>0?total.toLocaleString('id-ID'):'—';
+  document.getElementById('kb-det').textContent=`pohon (${base.toLocaleString('id-ID')} pokok + ${Math.round(base*sulam/100)} cadangan sulaman)`;
+}
+
+// ════ HELPERS ════
+function v(id){ const e=document.getElementById(id); return e?e.value.trim():''; }
+function clearFields(ids){ ids.forEach(id=>{ const e=document.getElementById(id); if(e) e.value=''; }); }
+function stBadge(s){
+  return {layak:'<span class="badge bg-green">Layak Tebang</span>',pemantauan:'<span class="badge bg-gold">Pemantauan</span>',perlindungan:'<span class="badge bg-blue">Perlindungan</span>',ditebang:'<span class="badge bg-gray">Ditebang</span>'}[s]||s;
+}
+</script>
+</body>
+</html>
